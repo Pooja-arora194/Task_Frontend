@@ -133,10 +133,21 @@ function ApplyLeave() {
         var a = moment(e.target.value);
         var b = moment(submitval.from_date);
         let diff = a.diff(b, 'days') + 1
-        if (submitval.leave == 'Earned Leave' && diff != 3) {
-            toast.error("You can apply Only Three Earned Leaves")
+        if (submitval.leave == 'Earned Leave' && diff >= 3) {
+
+            var c = moment(e.target.value);
+            var d = moment(submitval.from_date);
+            let diff1 = c.diff(d, 'days') + 1
+            if (diff1 > pendingLeave?.leave?.earned_leave) {
+                toast.error(`You can  Only have ${pendingLeave.leave.earned_leave} Earned Leaves Available`)
+                return
+            }
+        } else {
+            toast.error("You can apply Minimum Three Earned Leaves")
             return
         }
+
+
         let tmp = { ...submitval }
         tmp.to_date = e.target.value
         setSubmitVal({ ...tmp })
@@ -212,17 +223,7 @@ function ApplyLeave() {
         return value
     }
 
-    const calculatePaidOff = (sick_leave, casual_leave) => {
 
-        let s_count = 0
-        if (sick_leave < 0) {
-            s_count += sick_leave
-        }
-        if (casual_leave < 0) {
-            s_count += casual_leave
-        }
-        return Math.abs(s_count)
-    }
     const add = () => {
 
         const { reason, from_date, to_date, leave, leave_type } = submitval;
@@ -322,7 +323,7 @@ function ApplyLeave() {
                                         <input
                                             type="date"
                                             className="add_userInput formtext date"
-                                            min={moment(new Date()).format('YYYY-MM-DD')}
+                                            min={moment(new Date()).startOf('month').format('YYYY-MM-DD')}
                                             placeholder="From Date"
                                             name="from_date"
                                             onChange={handleChangeDateFrom}

@@ -20,7 +20,6 @@ export default function DataContextProvider({ children }) {
     }, [])
 
     async function fetchUser() {
-        debugger
         return new Promise((resolve, reject) => {
             let authtokens = localStorage.getItem("authtoken")
             let token = {

@@ -468,7 +468,7 @@ function Dashboard(props) {
         <LayoutTemplate >
             <ToastContainer></ToastContainer>
             <div className="container">
-                <div className="row justify-content-between">
+                <div className="row justify-content-around">
                     <div className="col-md-7">
                         <div className='row announcement_main'>
                             <div className='col-7 col-sm-8 announcement'>

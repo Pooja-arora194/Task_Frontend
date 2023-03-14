@@ -15,6 +15,7 @@ const AddUser = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState('')
   const [show, setShow] = useState(false)
+  const [teamLeads, setTeamLeads] = useState([])
   const [newuser, setNewUser] = useState({
     name: "",
     first_login: "",
@@ -23,151 +24,107 @@ const AddUser = () => {
     phonenumber: "",
     date_of_joining: "",
     emp_id: "",
-    designation: ""
-
+    designation: "",
+    otherDesignation: '',
+    profile: '',
+    team_leader: ''
   },
   )
 
-
-
-  const handlesubmit = async (e) => {
-
-    e.preventDefault();
-  };
-
-
   const values = (e) => {
-
     setNewUser({ ...newuser, [e.target.name]: e.target.value });
-
   }
 
-
-  useEffect(() => {
-
-    let authtokens = localStorage.getItem("authtoken");
-    let token = {
-      headers: {
-        token: authtokens,
-        "Content-Type": "application/json",
-      },
-    };
-
-    if (!authtokens) {
-      navigate('/')
-    }
-  }, [])
-
-
-  const add = () => {
-
+  const add = (e) => {
+    e.preventDefault()
     const { name, email, first_login, dob, phonenumber, date_of_joining, emp_id, designation } = newuser;
+    console.log(newuser)
 
     axios
       .post(`${BASE_URL}/add_user`, newuser)
       .then((res) => {
         setNewUser(res.data)
+        console.log(res.data)
         toast.success("User Added Successfully")
         navigate('/invite')
-
-        // localStorage.setItem('authtoken', res.data.authtoken);
-
-
+        setNewUser({ name: "", email: "", first_login: "", emp_id: "", phonenumber: "", dob: "", date_of_joining: "", designation: "" })
       })
       .catch((err) => {
+        toast.error(err.response?.data?.msg ?? "Something went wrong")
         console.log(err);
 
       });
-    setNewUser({ name: "", email: "", first_login: "", emp_id: "", phonenumber: "", dob: "", date_of_joining: "", designation: "" })
   }
 
-
   useEffect(() => {
-
-    let authtokens = localStorage.getItem("authtoken");
-    if (!authtokens) {
-      navigate('/')
-    }
-    else {
-      let display = {
-        headers: {
-          'token': authtokens,
-        }
-      }
-
-
-      axios.get(`${BASE_URL}/all`, display)
-        .then((res) => {
-
-          setRole(res.data.role)
-          if (res.data.role == 2 || res.data.role == 1) {
-            setShow(true)
-          }
-          else {
-            navigate('/')
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-
-        });
+    var config = {
+      method: 'get',
+      url: `${BASE_URL}/get/team_leaders`,
+      headers: {}
     };
 
-  }, [])
-
+    axios(config)
+      .then(function (response) {
+        setTeamLeads(response.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  })
 
   return (
     <LayoutTemplate>
+      <ToastContainer></ToastContainer>
       <div className=" layout add-UserLayout">
         <div className="container">
           <h2 className="add-user-heading">Add Employee</h2>
 
-          <form onSubmit={handlesubmit}>
+          <form onSubmit={add}>
             <div className="row justify-content-between custom-row">
               <div className="col-md-3">
                 <label className="addUserLabel">Employee Name</label>
                 <input type="text" className=" add_userInput" onChange={values} name="name"
-                  value={newuser.name} placeholder="Enter Employee Name" />
+                  value={newuser.name} placeholder="Enter Employee Name" required />
               </div>
               <div className="col-md-3">
                 <label className="addUserLabel">Email Id</label>
                 <input className=" add_userInput" onChange={values}
                   value={newuser.email} placeholder="Enter Email Id" type="email" name=
-                  "email" />
+                  "email" required />
               </div>
               <div className="col-md-3">
                 <label className="addUserLabel">Password</label>
                 <input className=" add_userInput" onChange={values}
-                  value={newuser.first_login} placeholder="Enter Password" type="string" name="first_login" />
+                  value={newuser.first_login} placeholder="Enter Password" type="string" name="first_login" required />
               </div>
             </div>
             <div className="row justify-content-between custom-row">
               <div className="col-md-3">
                 <label className="addUserLabel">Date Of Birth</label>
                 <input className=" add_userInput" onChange={values}
-                  value={newuser.dob} type="date" placeholder="Enter Date Of Birth" name="dob" />
+                  value={newuser.dob} type="date" placeholder="Enter Date Of Birth" name="dob" required />
               </div>
               <div className="col-md-3">
                 <label className="addUserLabel">Phone No</label>
                 <input className=" add_userInput" onChange={values}
-                  value={newuser.phonenumber} placeholder="Enter Phone No" type="phone" name="phonenumber" />
+                  value={newuser.phonenumber} placeholder="Enter Phone No" type="phone" name="phonenumber" required maxLength={10} minLength={9} />
               </div>
               <div className="col-md-3">
                 <label className="addUserLabel">Employee ID</label>
                 <input className=" add_userInput" onChange={values}
                   value={newuser.emp_id}
-                  placeholder="Enter Employee ID" type="string" name="emp_id" />
+                  placeholder="Enter Employee ID" type="string" name="emp_id" required />
               </div>
             </div>
-            <div className="row  custom-row last-row">
+            <div className="row justify-content-between custom-row">
               <div className="col-md-3">
                 <label className="addUserLabel">Date Of Joining</label>
-                <input className=" add_userInput" onChange={values} value={newuser.date_of_joining} placeholder="Enter Date Of Joining" type="date" name="date_of_joining" />
+                <input className=" add_userInput" onChange={values} value={newuser.date_of_joining} placeholder="Enter Date Of Joining" type="date" name="date_of_joining" required />
               </div>
               <div className="col-md-3">
                 <label className=" addUserLabel">Designation</label>
                 <select className="add_userInput" name="designation" onChange={values}
-                  value={newuser.designation}>
+                  value={newuser.designation} required>
                   <option selected>Select Designation</option>
                   <option value="Full Stack Developer">Full Stack Developer</option>
                   <option value="Php Developer">Php Developer</option>
@@ -175,20 +132,56 @@ const AddUser = () => {
                   <option value="SEO">SEO</option>
                   <option value="BDE">BDE</option>
                   <option value="HR">HR</option>
+                  <option value="other">Other</option>
 
                 </select>
-                {/* <input className="add_userInput" onChange={values} value={newuser.designation} placeholder="Enter Designation" type="date" /> */}
+                {newuser?.designation == "other"
+                  &&
+                  <>
+                    <label className=" addUserLabel">Designation</label>
+                    <input className="add_userInput" name='otherDesignation' onChange={values} value={newuser.otherDesignation} placeholder="Enter Designation" type="text" />
+                  </>
+                }
+              </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Profile</label>
+                <select className="add_userInput" name="profile" onChange={values}
+                  value={newuser.profile} required>
+                  <option selected>Select Designation</option>
+                  <option value="team_leader">Team Leader</option>
+                  <option value="employee">Employee</option>
+                </select>
+                {newuser?.profile == "employee"
+                  &&
+                  <>
+                    <label className="addUserLabel">Team Leader</label>
+                    <select className="add_userInput" name="team_leader" onChange={values}
+                      value={newuser.team_leader} required>
+                      {teamLeads?.length > 0 ?
+                        <>
+                          <option selected>Select Team Leader</option>
+                          {teamLeads.map((item, index) => {
+                            return <option kye={index} value={item._id}>
+                              {item.name}
+                            </option>
+                          })}
+                        </>
+                        :
+                        <option disabled >No Team Leader</option>
+                      }
+
+                    </select>
+                  </>
+                }
               </div>
             </div>
-            <input type="submit" className="add-employee-btn" value="Add Employee" onClick={add} />
+            <input type="submit" className="add-employee-btn" value="Add Employee" />
           </form>
         </div>
 
       </div>
     </LayoutTemplate>
   );
-
-
 };
 
 export default AddUser;
