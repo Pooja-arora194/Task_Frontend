@@ -174,7 +174,7 @@ function LayoutTemplate({ children }) {
                     : role == 1 ?
 
                         <List className='side_links'>
-                            {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/admin_leave_request">Leave Request</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
+                            {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/admin_leave_request">Leave Requests</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
                                 // <Link to="/employee_list">Employee Records</Link>
                             ].map((text, index) => (
 
@@ -241,7 +241,7 @@ function LayoutTemplate({ children }) {
 
                                                 </ListItemIcon>
 
-                                                <ListItemText  ><Link to="/leaverequest">Leave Request</Link></ListItemText>
+                                                <ListItemText  ><Link to="/leaverequest">Team Leave Requests</Link></ListItemText>
                                             </ListItemButton>
                                         </>}
                                 </List>
