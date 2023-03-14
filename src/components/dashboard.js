@@ -478,7 +478,8 @@ function Dashboard(props) {
                             </div>
                             <div className='col-4'>
                                 <Typography>
-                                    <button className='newpost_btn' onClick={nameShowModal}>New Post</button>
+                                {user?.role == 2 && <button className='newpost_btn' onClick={nameShowModal}>New Post</button>}
+
 
 
                                     <Modal
