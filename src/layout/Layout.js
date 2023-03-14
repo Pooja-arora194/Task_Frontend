@@ -353,7 +353,7 @@ function LayoutTemplate({ children }) {
 
                                     <div className={item.is_read ? "notificationCard" : "notificationCard unReadNotification"}>
                                         {/* {item.type == "pending" ? `${item.userId.name} ${Notification['pending']}` : item.type == "approved" ? `` : ``} */}
-                                        <p onClick={(e) => { read_notification(e, item._id) }}>{`${item.userId.name} ${Notification[item.type]}`} </p>
+                                        <p onClick={(e) => { read_notification(e, item._id) }}>{`${item?.userId?.name} ${Notification[item.type]}`} </p>
                                     </div>
                                 </>
                             })}

@@ -133,7 +133,11 @@ function ApplyLeave() {
         var a = moment(e.target.value);
         var b = moment(submitval.from_date);
         let diff = a.diff(b, 'days') + 1
-        if (submitval.leave == 'Earned Leave' && diff >= 3) {
+        if (submitval.leave == 'Earned Leave') {
+            if(diff<3){
+                toast.error("You can apply Minimum Three Earned Leaves")
+                return
+            }
 
             var c = moment(e.target.value);
             var d = moment(submitval.from_date);
@@ -142,10 +146,7 @@ function ApplyLeave() {
                 toast.error(`You can  Only have ${pendingLeave.leave.earned_leave} Earned Leaves Available`)
                 return
             }
-        } else {
-            toast.error("You can apply Minimum Three Earned Leaves")
-            return
-        }
+        } 
 
 
         let tmp = { ...submitval }
