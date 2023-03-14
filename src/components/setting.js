@@ -16,6 +16,7 @@ import { BASE_URL } from "../baseUrl";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoaderContext } from "../App";
+import LayoutTemplate from "../layout/Layout";
 
 const Setting = () => {
   const { showLoader, hideLoader } = useContext(LoaderContext)
@@ -264,10 +265,8 @@ const Setting = () => {
 
 
   return (
-    <>
-      <Header />
+    <LayoutTemplate>
       <ToastContainer></ToastContainer>
-      <div className="static_width layout ">
         <div className="container">
           {/* <Box
             component="main"
@@ -393,8 +392,7 @@ const Setting = () => {
           </form>
           {/* </Box> */}
         </div>
-      </div>
-    </>
+    </LayoutTemplate>
   )
 }
 

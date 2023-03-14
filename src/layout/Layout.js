@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Children, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -29,16 +29,15 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Button, Layout, Modal } from 'antd';
 import { Notification } from './../helpers/constant'
 import { DataContext } from "../context/DataContext";
-const drawerWidth = 240;
+const drawerWidth = 300;
 
-function LayoutTemplate({ window, component }) {
+function LayoutTemplate({children }) {
     const location = useLocation();
-    const { fetchUser, setUser, user } = useContext(DataContext)
+    const { fetchUser, setUser, user, fetchAllNotification, notifications, setNotifications } = useContext(DataContext)
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [profile, setProfile] = useState('');
     const [role, setRole] = useState(false)
-    const [notifications, setNotifications] = useState([])
     const [notificationsCount, setNotificationsCount] = useState(0)
     const [isLoading, setisLoading] = useState(true)
     const [sideBarOptions, setSideBarOptions] = useState(false)
@@ -84,7 +83,7 @@ function LayoutTemplate({ window, component }) {
         return months;
     }
     useEffect(() => {
-        if (!Object.keys(user) > 0) {
+        if (Object.keys(user).length > 0) {
             return
         }
         fetchUser()
@@ -101,21 +100,19 @@ function LayoutTemplate({ window, component }) {
     useEffect(() => {
         let role = user?.role
         let routeName = location.pathname
-        console.log(routeName)
-        if (!role) {
+        console.log(routeName,'flow1',role)
+        if (role==undefined) {
             return
         }
         let drawer = (
             <div>
                 {/* <Toolbar /> */}
                 <img src="./logo.png" style={{ padding: 10 }} ></img>
-
                 <Divider className='nav_divider text-center' />
+
                 {role == 2 ?
                     routeName == '/dashboardpage' ?
                         <List>
-
-
                             <div className='avatar'>
                                 <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
 
@@ -157,7 +154,7 @@ function LayoutTemplate({ window, component }) {
                                 <Link to="/applyleave">Apply Leave </Link>,
                                 <Link to="/leaverequest">Leave Request</Link>,
                                 <Link to="/adduser">Add Employee</Link>,
-                                <Link to="/invite">Employee List</Link>,
+                                // <Link to="/invite">Employee List</Link>,
                                 // <Link to="/addproject">Add Project</Link>,
 
                                 // <Link to="/employee_list">Employee Records</Link>,
@@ -191,25 +188,52 @@ function LayoutTemplate({ window, component }) {
                             ))}
                         </List>
 
-
                         :
                         role == 0 ?
+                        routeName == '/dashboardpage' ?
+                        <List>
+                            <div className='avatar'>
+                                <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
 
-                            <List className='side_links'>
-                                {[<Link to="/dashboard">Dashboard</Link>,
-                                <Link to="/profile">Profile</Link>,
-                                <Link to="/leaves">Leaves</Link>,
-                                <Link to="/applyleave">Apply Leave</Link>].map((text, index) => (
+                            </div>
+                            <div className='profile_name'>
+                                <h5 className='mt-4 '>{user.name}</h5>
+                                <h5 className='mt-1'>#{user.emp_id}</h5>
+                            </div>
+                            <div className='profile_details'>
 
-                                    <ListItemButton key={index}>
-                                        <ListItemIcon>
 
-                                        </ListItemIcon>
-                                        <ListItemText primary={text} />
-                                    </ListItemButton>
+                                <div className='row user_info'>
+                                    <p>Designation </p><p className="fade_info">{user.designation}</p>
+                                    <p>Email </p><p className="fade_info">{user.email}</p>
+                                    <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
+                                    <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
+                                    <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
+                                </div>
+                            </div>
+                            <div className='logout_button mt-4'>
+                                <button className='btn btn-primary' onClick={logout}>Logout</button>
 
-                                ))}
-                            </List>
+                            </div>
+                        </List>
+
+                        :
+
+                                <List className='side_links'>
+                                    {[<Link to="/dashboardpage">Dashboard</Link>,
+                                    <Link to="/profile">Profile</Link>,
+                                    <Link to="/leaves">Leaves</Link>,
+                                    <Link to="/applyleave">Apply Leave</Link>].map((text, index) => (
+
+                                        <ListItemButton key={index}>
+                                            <ListItemIcon>
+
+                                            </ListItemIcon>
+                                            <ListItemText primary={text} />
+                                        </ListItemButton>
+
+                                    ))}
+                                </List>
                             : <>
                             </>
                 }
@@ -220,78 +244,20 @@ function LayoutTemplate({ window, component }) {
         setisLoading(false)
 
 
-    }, [user])
+    }, [user, location])
 
 
-    // useEffect(() => {
 
 
-    //     let authtokens = localStorage.getItem("authtoken");
-    //     let token = {
-    //         headers: {
-    //             token: authtokens,
-    //             "Content-Type": "application/json",
-    //         },
-    //     };
-    //     if (!authtokens) {
-    //         navigate('/')
-    //     }
-    //     else {
-    //         axios.get(`${BASE_URL}/profile`, token)
-    //             .then((res) => {
-    //                 console.log(res.data)
-    //                 setProfile(res.data)
-    //             })
-    //             .catch((err) => {
-    //                 console.log(err);
-    //             });
-    //     }
+    useEffect(() => {
+        fetchAllNotification()
+            .then((res) => {
+                console.log(res)
+            })
+            .catch((e) => {
 
-    // }, [])
-
-    // useEffect(() => {
-
-    //     let authtokens = localStorage.getItem("authtoken");
-    //     if (!authtokens) {
-    //         navigate('/')
-    //     }
-    //     else {
-    //         let display = {
-    //             headers: {
-    //                 'token': authtokens,
-    //             }
-    //         }
-
-    //         axios.get(`${BASE_URL}/all`, display)
-    //             .then((res) => {
-    //                 setRole(res.data.role)
-    //                 console.log(res.data.role, "abcccccc")
-    //             })
-    //             .catch((err) => {
-    //                 console.log(err);
-
-    //             });
-    //         axios.get(`${BASE_URL}/get_all_notification`, display)
-    //             .then((res) => {
-    //                 // setRole(res.data.role)
-    //                 console.log(res.data, "All")
-    //                 setNotifications(res.data)
-    //                 let tempCount = 0
-    //                 for (let x of res.data) {
-    //                     if (!x.is_read) {
-    //                         tempCount++
-    //                     }
-    //                 }
-    //                 setNotificationsCount(tempCount)
-
-    //             })
-    //             .catch((err) => {
-    //                 console.log(err);
-
-    //             });
-    //     };
-
-    // }, [])
+            })
+    }, [])
 
     const read_notification = (e, element) => {
         e.preventDefault();
@@ -333,87 +299,12 @@ function LayoutTemplate({ window, component }) {
             });
     }
 
-    // const drawer = (
-    //     <div>
-    //         {/* <Toolbar /> */}
-    //         <img src="./logo.png" style={{ padding: 10 }} ></img>
 
-    //         <Divider className='nav_divider text-center' />
-    //         {role == 2 ?
-    //             <List className='side_links'>
-
-    //                 {[
-    //                     <Link to="/dashboardpage">Dashboard </Link>,
-    //                     <Link to="/profile">Profile </Link>,
-    //                     <Link to="/leaves">Leave Quota</Link>,
-    //                     <Link to="/applyleave">Apply Leave </Link>,
-    //                     <Link to="/leaverequest">Leave Request</Link>,
-    //                     <Link to="/adduser">Add Employee</Link>,
-    //                     <Link to="/invite">Employee List</Link>,
-    //                     // <Link to="/addproject">Add Project</Link>,
-
-    //                     // <Link to="/employee_list">Employee Records</Link>,
-
-
-    //                 ].map((text, index) => (
-
-    //                     <ListItemButton key={index}>
-    //                         <ListItemIcon>
-
-    //                         </ListItemIcon>
-    //                         <ListItemText primary={text} />
-    //                     </ListItemButton>
-
-    //                 ))}
-    //             </List>
-    //             : role == 1 ?
-
-    //                 <List className='side_links'>
-    //                     {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/admin_leave_request">Leave Request</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
-    //                         // <Link to="/employee_list">Employee Records</Link>
-    //                     ].map((text, index) => (
-
-    //                         <ListItemButton key={index}>
-    //                             <ListItemIcon>
-
-    //                             </ListItemIcon>
-    //                             <ListItemText primary={text} />
-    //                         </ListItemButton>
-
-    //                     ))}
-    //                 </List>
-
-
-    //                 :
-    //                 role == 0 ?
-
-    //                     <List className='side_links'>
-    //                         {[<Link to="/dashboard">Dashboard</Link>,
-    //                         <Link to="/profile">Profile</Link>,
-    //                         <Link to="/leaves">Leaves</Link>,
-    //                         <Link to="/applyleave">Apply Leave</Link>].map((text, index) => (
-
-    //                             <ListItemButton key={index}>
-    //                                 <ListItemIcon>
-
-    //                                 </ListItemIcon>
-    //                                 <ListItemText primary={text} />
-    //                             </ListItemButton>
-
-    //                         ))}
-    //                     </List>
-    //                     : <>
-    //                     </>
-    //         }
-
-    //     </div >
-    // );
-
-    const container = window !== undefined ? () => window().document.body : undefined;
+    // const container = window !== undefined ? () => window().document.body : undefined;
 
     return (
 
-        !isLoading &&
+
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar
@@ -496,7 +387,7 @@ function LayoutTemplate({ window, component }) {
             >
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
-                    container={container}
+                    // container={container}
                     variant="temporary"
                     open={mobileOpen}
                     onClose={handleDrawerToggle}
@@ -526,6 +417,9 @@ function LayoutTemplate({ window, component }) {
                     {sideBarOptions}
                 </Drawer>
             </Box>
+            <div className="static_width layout">
+                {!isLoading && children}
+            </div>
 
         </Box>
 

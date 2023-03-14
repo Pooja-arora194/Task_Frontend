@@ -11,6 +11,7 @@ import Header from "../utils/header";
 import { BASE_URL } from "../../baseUrl";
 import CheckIcon from '@mui/icons-material/Check';
 import { LoaderContext } from '../../App.js'
+import LayoutTemplate from "../../layout/Layout";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 0;
@@ -108,51 +109,49 @@ function Invite() {
 
 
     return (
-        <>
-            <Header />
+        <LayoutTemplate>
             <ToastContainer></ToastContainer>
-            <div className="static_width layout">
-                <div className="container">
-                    <h5 className="mt-4"><b> Employee Invite</b></h5>
-                    <div className="leave">
+            <div className="container">
+                <h5 className="mt-4"><b> Employee Invite</b></h5>
+                <div className="leave">
 
-                        <div className="col-sm-10 mt-4">
-                            <table class="table ">
-                                <thead>
-                                    <th>Emp Id</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Action</th>
-                                </thead>
-                                {request.length > 0 ?
-                                    <tbody>
-                                        {
-                                            request.map((element) => {
-                                                return (
-                                                    <>
-                                                        <tr>
-                                                            <td>{element.name}</td>
-                                                            <td>{element.emp_id}</td>
-                                                            <td>{element.email}</td>
-                                                            {element.invite_status == "true" ? <td> <CheckIcon /></td>
-                                                                : <td><button className="btn btn-primary inviteBtn" onClick={(e) => { invite(e, element._id) }}>Invite Link</button></td>
-                                                            }
-                                                        </tr>
-                                                    </>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                    :
-                                    <tr><td colspan="8"><h5 className="leave_no_found">No Record Found</h5></td></tr> 
+                    <div className="col-sm-10 mt-4">
+                        <table class="table ">
+                            <thead>
+                                <th>Emp Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </thead>
+                            {request.length > 0 ?
+                                <tbody>
+                                    {
+                                        request.map((element) => {
+                                            return (
+                                                <>
+                                                    <tr>
+                                                        <td>{element.name}</td>
+                                                        <td>{element.emp_id}</td>
+                                                        <td>{element.email}</td>
+                                                        {element.invite_status == "true" ? <td> <CheckIcon /></td>
+                                                            : <td><button className="btn btn-primary inviteBtn" onClick={(e) => { invite(e, element._id) }}>Invite Link</button></td>
+                                                        }
+                                                    </tr>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                                :
+                                <tr><td colspan="8"><h5 className="leave_no_found">No Record Found</h5></td></tr>
 
-                                }
-                            </table>
-                        </div>
+                            }
+                        </table>
                     </div>
                 </div>
             </div>
-        </>
+        </LayoutTemplate>
+
     )
 }
 export default Invite;

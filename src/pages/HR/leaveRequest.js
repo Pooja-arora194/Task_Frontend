@@ -14,6 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { LoaderContext } from '../../App.js'
 import { Table } from 'antd'
 import moment from 'moment'
+import LayoutTemplate from "../../layout/Layout";
 
 
 const ITEM_HEIGHT = 48;
@@ -68,7 +69,7 @@ function LeaveRequest() {
                     </>
                     :
                     <>
-                    N/A
+                        N/A
                     </>
             ),
         },
@@ -206,29 +207,22 @@ function LeaveRequest() {
 
 
     return (
-        <>
-            <Header />
+        <LayoutTemplate>
             <ToastContainer></ToastContainer>
+            <div className="container">
+                <h5 className="page-heading"><b>Leave Requests</b></h5>
+                <div className="leave request1">
+                    <h6 className="sick-leave-title-border"> Sick/Casual Leave Requests</h6>
+                    {/* <div className="col-sm-8 mt-4"> */}
 
-            <div className="static_width layout">
-                <div className="container">
-                    <h5 className="page-heading"><b>Leave Requests</b></h5>
-                    <div className="leave request1">
-                        <h6 className="sick-leave-title-border"> Sick/Casual Leave Requests</h6>
-                        {/* <div className="col-sm-8 mt-4"> */}
-
-                        <Table
-                            columns={columns}
-                            dataSource={leaveData}
-                        />
-                        {/* </div> */}
-                    </div>
+                    <Table
+                        columns={columns}
+                        dataSource={leaveData}
+                    />
+                    {/* </div> */}
                 </div>
-
             </div>
-
-
-        </>
+        </LayoutTemplate>
     )
 }
 export default LeaveRequest;

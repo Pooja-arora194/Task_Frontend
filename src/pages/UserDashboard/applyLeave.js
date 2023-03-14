@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Header from "../utils/header";
 import axios from "axios";
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { LoaderContext } from '../../App.js'
 
 import moment from "moment";
+import LayoutTemplate from "../../layout/Layout";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 0;
@@ -168,7 +169,7 @@ function ApplyLeave() {
                 .catch((err) => {
                     console.log(err);
                 })
-                .finally(()=>{
+                .finally(() => {
                     hideLoader()
                 })
         }
@@ -197,7 +198,7 @@ function ApplyLeave() {
                 .catch((err) => {
                     console.log(err);
                 })
-                .finally(()=>{
+                .finally(() => {
                 })
         }
 
@@ -264,132 +265,126 @@ function ApplyLeave() {
 
 
     return (
-        <>
-            <div>
-                <Header />
-                <ToastContainer></ToastContainer>
+        <LayoutTemplate>
+            <ToastContainer></ToastContainer>
+            <div className="apply-leaves-main-layout">
+                <div className="container ">
+                    <h3 className="page-heading">Apply Leave</h3>
 
-                {/* <Toolbar /> */}
-                <div className="static_width layout apply-leaves-main-layout">
-                    <div className="container ">
-                        <h3 className="page-heading">Apply Leave</h3>
-
-                        <div className="row avail-leaves-card-row">
-                            <div className="col-md-4">
-                                <div className=" avail-leaves-card">
-                                    <div className="count earn-leave-count"> {returnTwo(pendingLeave?.leave?.earned_leave >0? pendingLeave.leave?.earned_leave : 0)}</div>
-                                    <div className="heading">Earned Leaves Available</div>
-                                </div>
+                    <div className="row avail-leaves-card-row">
+                        <div className="col-md-4">
+                            <div className=" avail-leaves-card">
+                                <div className="count earn-leave-count"> {returnTwo(pendingLeave?.leave?.earned_leave > 0 ? pendingLeave.leave?.earned_leave : 0)}</div>
+                                <div className="heading">Earned Leaves Available</div>
                             </div>
+                        </div>
 
-                            <div className="col-md-4">
-                                <div className=" avail-leaves-card">
-                                    <div className="count sick-leave-count"> {returnTwo(pendingLeave?.leave?.sick_leave >= 0 ? pendingLeave.leave?.sick_leave : 0)}</div>
-                                    <div className="heading">Sick Leaves Available</div>
-                                </div>
+                        <div className="col-md-4">
+                            <div className=" avail-leaves-card">
+                                <div className="count sick-leave-count"> {returnTwo(pendingLeave?.leave?.sick_leave >= 0 ? pendingLeave.leave?.sick_leave : 0)}</div>
+                                <div className="heading">Sick Leaves Available</div>
                             </div>
-                            <div className="col-md-4">
-                                <div className=" avail-leaves-card">
-                                    <div className="count casual-leave-count">  {returnTwo(pendingLeave?.leave?.casual_leave >= 0 ? pendingLeave.leave?.casual_leave : 0)}</div>
-                                    <div className="heading">Casual Leaves Available</div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className=" avail-leaves-card">
+                                <div className="count casual-leave-count">  {returnTwo(pendingLeave?.leave?.casual_leave >= 0 ? pendingLeave.leave?.casual_leave : 0)}</div>
+                                <div className="heading">Casual Leaves Available</div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-6" >
+                            <div className="formMargin-10px ">
+                                <form onSubmit={handleSubmit} >
+
+                                    <div className="form-group" align="left">
+                                        <label>Leave</label>
+                                        <select id="dino-select" className="add_userInput" name="leave" onChange={handleChangeLeave} value={submitval.leave} required>
+                                            <option  >Select Leave</option>
+                                            <option value="Casual Leave">Casual Leave</option>
+                                            <option value="Sick Leave">Sick Leave</option>
+                                            <option value="Earned Leave">Earned Leave</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group" align="left">
+                                        <label>Leave Type</label>
+                                        <select id="dino-select" className="add_userInput" name="leave_type" onChange={handleChangeLeaveType} value={submitval.leave_type} required>
+                                            <option value=''>Select Leave Type</option>
+                                            <option value="Full Day">Full Day</option>
+                                            <option value="Half Day">Half Day</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group" align="left">
+                                        <label>From Date</label>
+                                        <input
+                                            type="date"
+                                            className="add_userInput formtext date"
+                                            min={moment(new Date()).format('YYYY-MM-DD')}
+                                            placeholder="From Date"
+                                            name="from_date"
+                                            onChange={handleChangeDateFrom}
+
+                                            value={submitval.from_date}
+
+                                        />
+                                    </div>
+                                    <div className="form-group" align="left">
+                                        <label>To Date</label>
+                                        <input
+                                            type="date"
+                                            className={submitval.leave_type == 'Half Day' ? "add_userInput formtext date cursur-disabled" : 'add_userInput formtext date '}
+                                            min={submitval.from_date ? moment(submitval.from_date).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD')}
+                                            placeholder="To Date"
+                                            name="to_date"
+                                            onChange={handleChangeDateTo}
+                                            disabled={submitval.leave_type == 'Half Day' ? true : false}
+
+                                            value={submitval.to_date}
+
+                                        />
+                                    </div>
+
+
+                                    <div className="form-group " align="left">
+                                        <label>Reason</label>
+                                        <textarea placeholder="Specify Reason" rows="4" className="add_userInput" name="reason" onChange={values} value={submitval.reason} />
+                                    </div>
+
+                                    <div className="submit-btn mt-2" align="right">
+                                        <input
+                                            type="submit"
+                                            name="submit"
+                                            className="apply-leave-btn"
+                                            value="Apply Leave"
+                                            onClick={add}
+                                        />
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                        <div className="col-lg-6 ">
+                            <div className="formMargin-10px float-right">
+                                <div style={wrapperStyle} className="mt-4" >
+
+                                    <Calendar fullscreen={false} onPanelChange={onPanelChange} />
                                 </div>
+
                             </div>
 
 
                         </div>
-                        <div className="row">
-                            <div className="col-lg-6" >
-                                <div className="formMargin-10px ">
-                                    <form onSubmit={handleSubmit} >
 
-                                        <div className="form-group" align="left">
-                                            <label>Leave</label>
-                                            <select id="dino-select" className="add_userInput" name="leave" onChange={handleChangeLeave} value={submitval.leave} required>
-                                                <option  >Select Leave</option>
-                                                <option value="Casual Leave">Casual Leave</option>
-                                                <option value="Sick Leave">Sick Leave</option>
-                                                <option value="Earned Leave">Earned Leave</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group" align="left">
-                                            <label>Leave Type</label>
-                                            <select id="dino-select" className="add_userInput" name="leave_type" onChange={handleChangeLeaveType} value={submitval.leave_type} required>
-                                                <option value=''>Select Leave Type</option>
-                                                <option value="Full Day">Full Day</option>
-                                                <option value="Half Day">Half Day</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="form-group" align="left">
-                                            <label>From Date</label>
-                                            <input
-                                                type="date"
-                                                className="add_userInput formtext date"
-                                                min={moment(new Date()).format('YYYY-MM-DD')}
-                                                placeholder="From Date"
-                                                name="from_date"
-                                                onChange={handleChangeDateFrom}
-
-                                                value={submitval.from_date}
-
-                                            />
-                                        </div>
-                                        <div className="form-group" align="left">
-                                            <label>To Date</label>
-                                            <input
-                                                type="date"
-                                                className={submitval.leave_type == 'Half Day' ? "add_userInput formtext date cursur-disabled" : 'add_userInput formtext date '}
-                                                min={submitval.from_date ? moment(submitval.from_date).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD')}
-                                                placeholder="To Date"
-                                                name="to_date"
-                                                onChange={handleChangeDateTo}
-                                                disabled={submitval.leave_type == 'Half Day' ? true : false}
-
-                                                value={submitval.to_date}
-
-                                            />
-                                        </div>
-
-
-                                        <div className="form-group " align="left">
-                                            <label>Reason</label>
-                                            <textarea placeholder="Specify Reason" rows="4" className="add_userInput" name="reason" onChange={values} value={submitval.reason} />
-                                        </div>
-
-                                        <div className="submit-btn mt-2" align="right">
-                                            <input
-                                                type="submit"
-                                                name="submit"
-                                                className="apply-leave-btn"
-                                                value="Apply Leave"
-                                                onClick={add}
-                                            />
-                                        </div>
-
-
-                                    </form>
-                                </div>
-                            </div>
-                            <div className="col-lg-6 ">
-                                <div className="formMargin-10px float-right">
-                                    <div style={wrapperStyle} className="mt-4" >
-
-                                        <Calendar fullscreen={false} onPanelChange={onPanelChange} />
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-
-                        </div >
-                    </div>
-
+                    </div >
                 </div>
 
             </div>
+        </LayoutTemplate>
 
-        </>
     );
 
 

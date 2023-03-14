@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { LoaderContext } from '../../App.js'
 import moment from 'moment'
+import LayoutTemplate from '../../layout/Layout';
 function Leaves() {
     const { showLoader, hideLoader } = useContext(LoaderContext)
 
@@ -66,7 +67,7 @@ function Leaves() {
         setCasualLeaves([...casual])
         setEarnedLeaves([...earn])
         setSickLeaves([...sick])
-        console.log(casual,earn,sick,"flow")
+        console.log(casual, earn, sick, "flow")
     }, [leavevalue])
 
 
@@ -105,111 +106,77 @@ function Leaves() {
 
 
     return (
-        <>
-            <Header />
-            <div className='static_width layout'>
-                <div className='container'>
-                    <div className='row mt-3'>
-                        <div className='col-md-10'>
-                            <h4 className='page-heading'>Leave Quota</h4>
-
-                        </div>
-
-                        <div className='col-md-2'>
-                            <Link to="/applyleave">
-                                <button className='apply-leave-btn'>Apply Leaves</button>
-                            </Link>
-                        </div>
+        <LayoutTemplate>
+            <div className='container'>
+                <div className='row mt-3'>
+                    <div className='col-md-10'>
+                        <h4 className='page-heading'>Leave Quota</h4>
 
                     </div>
-                    <div className='row mt-4'>
-                        <div className='col-md-6'>
-                            <div className="calender">
-                                <h5 className='text-start'>Calendar</h5>
-                                <div style={wrapperStyle} className="mt-4" >
 
-                                    {/* <Calendar
+                    <div className='col-md-2'>
+                        <Link to="/applyleave">
+                            <button className='apply-leave-btn'>Apply Leaves</button>
+                        </Link>
+                    </div>
+
+                </div>
+                <div className='row mt-4'>
+                    <div className='col-md-6'>
+                        <div className="calender">
+                            <h5 className='text-start'>Calendar</h5>
+                            <div style={wrapperStyle} className="mt-4" >
+
+                                <Calendar
                                         // dateCellRender={dateCellRender}
                                         // monthCellRender={monthCellRender}
                                         fullscreen={false}
                                         onPanelChange={onPanelChange}
-                                        dateFullCellRender={onFullRender}
-                                    /> */}
-                                    <Calendar
-                                        // style={{
-                                        //     "width": "100%",
-                                        //     "border-radius": "19px",
-                                        //     "border": "0.935089px solid #E5E5EF"
-                                        // }}
-                                        tileClassName={({ date, view }) => {
-                                            console.log(moment(date).format("YYYY-MM-DD"),"flow")
-                                            // if (
-                                            //     sickLeaves.find(
-                                            //         (x) => x === moment(date).format("YYYY-MM-DD")
-                                            //     )
-                                            // ) {
-                                            //     console.log("check")
-                                            //     return "sick-leave-highlight";
-                                            // }
-                                            if (
-                                                casualLeaves.find(
-                                                    (x) => x === moment(date).format("YYYY-MM-DD")
-                                                )
-                                            ) {
-                                                console.log("check123")
-                                                return "casual-leave-highlight";
-                                            }
-                                            // if (
-                                            //     earnedLeaves.find(
-                                            //         (x) => x === moment(date).format("YYYY-MM-DD")
-                                            //     )
-                                            // ) {
-                                            //     return "earn-leave-highlight";
-                                            // }
-                                        }}
+                                        // dateFullCellRender={onFullRender}
                                     />
-
-                                </div>
+                                {/* <Calendar
+                                   
+                                /> */}
 
                             </div>
+
                         </div>
-                        <div className='col-md-6 mt-4'>
-                            <div className='leave_request'>
-                                <h5>Leave Requests</h5>
-                                <table class="table mt-4">
+                    </div>
+                    <div className='col-md-6 mt-4'>
+                        <div className='leave_request'>
+                            <h5>Leave Requests</h5>
+                            <table class="table mt-4">
 
-                                    <tbody>
-                                        {
-                                            leavevalue?.length > 0 ?
-                                                leavevalue.map((element, index) => {
-                                                    return (
-                                                        <>
+                                <tbody>
+                                    {
+                                        leavevalue?.length > 0 ?
+                                            leavevalue.map((element, index) => {
+                                                return (
+                                                    <>
 
-                                                            <tr className='mt-4'>
-                                                                <td>  {element.leave}</td>
-                                                                <td>  {moment(element.from_date).format('DD MMM YYYY')} - {moment(element.to_date).format('DD MMM YYYY')}</td>
+                                                        <tr className='mt-4'>
+                                                            <td>  {element.leave}</td>
+                                                            <td>  {moment(element.from_date).format('DD MMM YYYY')} - {moment(element.to_date).format('DD MMM YYYY')}</td>
 
-                                                                <td style={{ fontWeight: 600 }} className={element.status == 'pending' ? 'pending-text' : element.status == 'approved' ? 'approved-text' : 'rejected-text'}>  {element.status}</td>
-                                                            </tr>
+                                                            <td style={{ fontWeight: 600 }} className={element.status == 'pending' ? 'pending-text' : element.status == 'approved' ? 'approved-text' : 'rejected-text'}>  {element.status}</td>
+                                                        </tr>
 
-                                                        </>
-                                                    )
-                                                })
-                                                :
-                                                <>
-                                                    <tr><td colspan="8"><h5 className="leave_no_found">No Record Found</h5></td></tr>
-                                                </>
+                                                    </>
+                                                )
+                                            })
+                                            :
+                                            <>
+                                                <tr><td colspan="8"><h5 className="leave_no_found">No Record Found</h5></td></tr>
+                                            </>
 
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </>
+        </LayoutTemplate>
     )
 }
 export default Leaves

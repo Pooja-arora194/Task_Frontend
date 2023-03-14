@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from "../baseUrl";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoadingOutlined } from '@ant-design/icons';
+import { DataContext } from "../context/DataContext";
 
 
 const Login = () => {
+  const { setuser, setToken } = useContext(DataContext)
   const [btnDisabled, setbtnDisabled] = useState(false)
   const navigate = useNavigate();
 
@@ -45,21 +47,14 @@ const Login = () => {
       .post(`${BASE_URL}/login`, data)
       .then((res) => {
         toast.success("Login Successfully")
+        setuser(res.data.user)
+        setToken(res.data.authtoken)
         localStorage.setItem("authtoken", res.data.authtoken);
-        if (res.data.user.role == 2 || res.data.user.role == 1) {
-
-          navigate('/dashboardpage')
-        }
-        else {
-          navigate('/dashboard')
-        }
-
+        navigate('/dashboardpage')
       })
       .catch((err) => {
         console.log(err);
         toast.error(err?.response?.data?.msg)
-
-
       })
       .finally(() => {
         setbtnDisabled(false)
@@ -73,7 +68,7 @@ const Login = () => {
       <div className="container login-template">
         <div className="row mt-4">
           <div className="col-md-6">
-            <img src="logo.png"  className="logo-image"></img>
+            <img src="logo.png" className="logo-image"></img>
             <img src="loginimg.gif" className="gif_file" height="400" />
           </div>
           <div className="col-md-6 mt-3" style={{ "align-self": "center" }}>

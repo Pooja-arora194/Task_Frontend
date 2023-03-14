@@ -20,6 +20,7 @@ export default function DataContextProvider({ children }) {
     }, [])
 
     async function fetchUser() {
+        debugger
         return new Promise((resolve, reject) => {
             let authtokens = localStorage.getItem("authtoken")
             let token = {
@@ -28,23 +29,41 @@ export default function DataContextProvider({ children }) {
                     "Content-Type": "application/json",
                 },
             };
-                axios.get(`${BASE_URL}/profile`, token)
-                    .then((res) => {
-                        setuser(res.data)
-                        resolve(res.data)
+            axios.get(`${BASE_URL}/profile`, token)
+                .then((res) => {
+                    setuser(res.data)
+                    resolve(res.data)
 
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        reject(err)
-                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    reject(err)
+                });
         })
 
     }
 
     async function fetchAllNotification() {
         return new Promise((resolve, reject) => {
+            let authtokens = localStorage.getItem("authtoken");
+            let display = {
+                headers: {
+                    'token': authtokens,
+                }
+            }
+            axios.get(`${BASE_URL}/get_all_notification`, display)
+                .then((res) => {
+                    // setRole(res.data.role)
+                    console.log(res.data, "All")
+                    setNotifications(res.data)
+                    resolve(res.data)
 
+                })
+                .catch((err) => {
+                    console.log(err);
+                    reject(err)
+
+                });
         })
     }
 

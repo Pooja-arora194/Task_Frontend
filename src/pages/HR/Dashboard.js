@@ -48,8 +48,7 @@ function Dashboards() {
     return (
         <>
             {show ?
-                <div>
-                    {/* <Header /> */}
+                <div >
                     <Dashboard />
                 </div>
                 : ''

@@ -5,8 +5,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './components/login';
 import Dashboard from './components/dashboard';
 import Setting from './components/setting';
-import Dashboardpage from './pages/UserDashboard/dashboard';
-import Dashboards from './pages/HR/Dashboard';
 import LeaveRequests from './pages/Admin/leaveRequest';
 import ApplyLeave from './pages/UserDashboard/applyLeave';
 import Profile from './pages/UserDashboard/profile';
@@ -53,8 +51,8 @@ function App() {
             <div className='App'>
                 <Routes>
                   <Route path="/" element={<Login />} />
-                  <Route path="/dashboardpage" element={<Layout />} />
-                  <Route path="/dashboard" element={<Dashboardpage />} />
+                  <Route path="/dashboardpage" element={<Dashboard />} />
+                  {/* <Route path="/dashboard" element={<Dashboardpage />} /> */}
                   {/* <Route path="/dashboard" element={<Dashboard />} /> */}
                   <Route path="/setting" element={<Setting />} />
                   <Route path="/applyleave" element={<ApplyLeave />} />
@@ -62,13 +60,13 @@ function App() {
                   <Route path="/leaves" element={<Leaves />} />
                   <Route path="/adduser" element={<AddUser />} />
                   <Route path="/leaverequest" element={<LeaveRequest />} />
-                  <Route path="/comments" element={<Comment />} />
-                  <Route path="/event" element={<Event />} />
+                  {/* <Route path="/comments" element={<Comment />} /> */}
+                  {/* <Route path="/event" element={<Event />} /> */}
                   <Route path="/invite" element={<Invite />} />
-                  <Route path="/addproject" element={<AddProjectPage />} />
-                  <Route path="/project/:code" element={<AddTeamPage />} />
-                  <Route path="/Admin_leave_request" element={<LeaveRequests />} />
-                  <Route path="/layout" element={<Layout />} />
+                  {/* <Route path="/addproject" element={<AddProjectPage />} /> */}
+                  {/* <Route path="/project/:code" element={<AddTeamPage />} /> */}
+                  {/* <Route path="/Admin_leave_request" element={<LeaveRequests />} /> */}
+                  {/* <Route path="/layout" element={<Layout />} /> */}
 
                   {/* <Route path="/employee_list" element={<EmployeeList />} /> */}
                 </Routes>
