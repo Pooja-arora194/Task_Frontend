@@ -469,7 +469,7 @@ function Dashboard(props) {
             <ToastContainer></ToastContainer>
             <div className="container">
                 <div className="row justify-content-around">
-                    <div className="col-md-7">
+                    <div className="col-md-8">
                         <div className='row announcement_main'>
                             <div className='col-7 col-sm-8 announcement'>
                                 <h5 className="page-heading">
@@ -696,7 +696,7 @@ function Dashboard(props) {
                             })
                         }
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <h6 className='mt-4'><b>Upcomming Birthday's</b></h6>
 
                         {

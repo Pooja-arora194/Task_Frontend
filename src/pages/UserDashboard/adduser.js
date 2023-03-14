@@ -70,7 +70,7 @@ const AddUser = () => {
       .catch(function (error) {
         console.log(error);
       });
-  })
+  },[])
 
   return (
     <LayoutTemplate>
@@ -107,7 +107,7 @@ const AddUser = () => {
               <div className="col-md-3">
                 <label className="addUserLabel">Phone No</label>
                 <input className=" add_userInput" onChange={values}
-                  value={newuser.phonenumber} placeholder="Enter Phone No" type="phone" name="phonenumber" required maxLength={10} minLength={9} />
+                  value={newuser.phonenumber} placeholder="Enter Phone No" type="number" name="phonenumber" required maxLength={10} minLength={9} />
               </div>
               <div className="col-md-3">
                 <label className="addUserLabel">Employee ID</label>

@@ -31,7 +31,7 @@ import { Notification } from './../helpers/constant'
 import { DataContext } from "../context/DataContext";
 const drawerWidth = 300;
 
-function LayoutTemplate({children }) {
+function LayoutTemplate({ children }) {
     const location = useLocation();
     const { fetchUser, setUser, user, fetchAllNotification, notifications, setNotifications } = useContext(DataContext)
     const navigate = useNavigate();
@@ -100,8 +100,8 @@ function LayoutTemplate({children }) {
     useEffect(() => {
         let role = user?.role
         let routeName = location.pathname
-        console.log(routeName,'flow1',role)
-        if (role==undefined) {
+        console.log(routeName, 'flow1', role)
+        if (role == undefined) {
             return
         }
         let drawer = (
@@ -190,38 +190,39 @@ function LayoutTemplate({children }) {
 
                         :
                         role == 0 ?
-                        routeName == '/dashboardpage' ?
-                        <List>
-                            <div className='avatar'>
-                                <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
+                            routeName == '/dashboardpage' ?
+                                <List>
+                                    <div className='avatar'>
+                                        <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
 
-                            </div>
-                            <div className='profile_name'>
-                                <h5 className='mt-4 '>{user.name}</h5>
-                                <h5 className='mt-1'>#{user.emp_id}</h5>
-                            </div>
-                            <div className='profile_details'>
+                                    </div>
+                                    <div className='profile_name'>
+                                        <h5 className='mt-4 '>{user.name}</h5>
+                                        <h5 className='mt-1'>#{user.emp_id}</h5>
+                                    </div>
+                                    <div className='profile_details'>
 
 
-                                <div className='row user_info'>
-                                    <p>Designation </p><p className="fade_info">{user.designation}</p>
-                                    <p>Email </p><p className="fade_info">{user.email}</p>
-                                    <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
-                                    <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
-                                    <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
-                                </div>
-                            </div>
-                            <div className='logout_button mt-4'>
-                                <button className='btn btn-primary' onClick={logout}>Logout</button>
+                                        <div className='row user_info'>
+                                            <p>Designation </p><p className="fade_info">{user.designation}</p>
+                                            <p>Email </p><p className="fade_info">{user.email}</p>
+                                            <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
+                                            <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
+                                            <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
+                                        </div>
+                                    </div>
+                                    <div className='logout_button mt-4'>
+                                        <button className='btn btn-primary' onClick={logout}>Logout</button>
 
-                            </div>
-                        </List>
+                                    </div>
+                                </List>
 
-                        :
+                                :
 
                                 <List className='side_links'>
                                     {[<Link to="/dashboardpage">Dashboard</Link>,
                                     <Link to="/profile">Profile</Link>,
+
                                     <Link to="/leaves">Leaves</Link>,
                                     <Link to="/applyleave">Apply Leave</Link>].map((text, index) => (
 
@@ -233,6 +234,16 @@ function LayoutTemplate({children }) {
                                         </ListItemButton>
 
                                     ))}
+                                    {user?.profile == 'team_leader' &&
+                                        <>
+                                            <ListItemButton >
+                                                <ListItemIcon>
+
+                                                </ListItemIcon>
+
+                                                <ListItemText  ><Link to="/leaverequest">Leave Request</Link></ListItemText>
+                                            </ListItemButton>
+                                        </>}
                                 </List>
                             : <>
                             </>

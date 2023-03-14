@@ -12,9 +12,10 @@ import { useNavigate } from "react-router-dom";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { LoaderContext } from '../../App.js'
-import { Table } from 'antd'
+import { Table, Modal } from 'antd'
 import moment from 'moment'
 import LayoutTemplate from "../../layout/Layout";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 const ITEM_HEIGHT = 48;
@@ -36,7 +37,28 @@ function LeaveRequest() {
     const navigate = useNavigate();
     const [request, setRequest] = useState([]);
     const [value, setValue] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
     const [leaveData, setLeaveData] = useState([])
+    const [leaveId, setLeaveId] = useState('');
+    const showModal = (e, id) => {
+        e.preventDefault();
+
+        setLeaveId(id)
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            setOpen(false);
+        }, 3000);
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
+    };
 
     const columns = [
         {
@@ -116,9 +138,89 @@ function LeaveRequest() {
                         : <button className="deny-btn-disabled" disabled>Rejected</button>
             ),
         },
+        {
+            title: '',
+            key: 'reason',
+            render: (_, record) => (
+
+                <>
+                    {record.status == 'pending' ? ""
+                        :
+                        <>
+                            <MoreVertIcon onClick={(e) => { showModal(e, record._id) }} />
+                            <Modal
+                                open={open}
+                                title="Edit Status"
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                footer={[
+
+
+
+                                ]}
+                            >
+                                <button className="approved-btn m-3" onClick={(e) => { EditLeave(e) }}>Approve</button>
+                                <button className="deny-btn" onClick={(e) => { DenyLeave(e) }}>Deny</button>
+                            </Modal>
+                        </>
+                    }
+                </>
+
+            ),
+        },
     ];
 
+    const EditLeave = (e) => {
+        e.preventDefault();
+        let authtokens = localStorage.getItem("authtoken");
+        let token = {
+            headers: {
+                token: authtokens,
+                "Content-Type": "application/json",
 
+            },
+        }
+
+        axios.put(`${BASE_URL}/edit_leave_approved/${leaveId} `, {}, token
+
+        )
+            .then((res) => {
+                console.log("res", res.data)
+                allLeaves()
+                setOpen(false)
+
+            })
+            .catch((err) => {
+                console.log(err);
+
+            });
+    }
+
+    const DenyLeave = (e) => {
+        e.preventDefault();
+        let authtokens = localStorage.getItem("authtoken");
+        let token = {
+            headers: {
+                token: authtokens,
+                "Content-Type": "application/json",
+
+            },
+        }
+
+        axios.put(`${BASE_URL}/edit_leave_deny/${leaveId} `, {}, token
+
+        )
+            .then((res) => {
+                console.log("res", res.data)
+                allLeaves()
+                setOpen(false)
+
+            })
+            .catch((err) => {
+                console.log(err);
+
+            });
+    }
     const allLeaves = () => {
         let authtokens = localStorage.getItem("authtoken");
         let token = {
