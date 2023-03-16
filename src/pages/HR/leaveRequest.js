@@ -308,12 +308,12 @@ function LeaveRequest() {
                         <input placeholder="Search By Name" className="add_userInput"/>
                     </div> */}
                     <div className="col-md-5">
-                        <div className="row">
+                        <div className="row justify-content-between">
                             <div className="col-md-5">
                                 <button className="search-leave-record-btn" onClick={search}>Search</button>
                             </div>
                             <div className="col-md-5">
-                                <button className="search-leave-record-btn" onClick={clearFilter}>Clear Filter</button>
+                                <button className="clear-filter-btn" onClick={clearFilter}>Clear Filter</button>
                             </div>
                         </div>
                     </div>

@@ -98,7 +98,7 @@ function LayoutTemplate({ children }) {
     }, [])
 
     useEffect(() => {
-        console.log(user,'context')
+        console.log(user, 'context')
         let role = user?.role
         let routeName = location.pathname
         console.log(routeName, 'flow1', role)
@@ -140,7 +140,7 @@ function LayoutTemplate({ children }) {
 
                             </div>
                             <div className='logout_button mt-4'>
-                                <button className='btn btn-primary' onClick={logout}>Logout</button>
+                                <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
 
                             </div>
                         </List>
@@ -158,7 +158,7 @@ function LayoutTemplate({ children }) {
                                 // <Link to="/invite">Employee List</Link>,
                                 // <Link to="/addproject">Add Project</Link>,
 
-                                // <Link to="/employee_list">Employee Records</Link>,
+                                <Link to="/employee_list">Employee Records</Link>,
 
 
                             ].map((text, index) => (
@@ -195,8 +195,7 @@ function LayoutTemplate({ children }) {
                                     </div>
                                 </div>
                                 <div className='logout_button mt-4'>
-                                    <button className='btn btn-primary' onClick={logout}>Logout</button>
-
+                                    <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
                                 </div>
                             </List>
 
@@ -241,7 +240,12 @@ function LayoutTemplate({ children }) {
                                         </div>
                                     </div>
                                     <div className='logout_button mt-4'>
-                                        <button className='btn btn-primary' onClick={logout}>Logout</button>
+                                        {user?.profile == 'team_leader' ?
+                                            <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
+                                            :
+                                            <button className='btn btn-primary' onClick={logout}>Logout</button>
+
+                                        }
 
                                     </div>
                                 </List>
@@ -288,7 +292,7 @@ function LayoutTemplate({ children }) {
         if (user?.profile == 'team_leader' && routeName == '/adduser') {
             redirectFlag = true
         }
-        if((role==1)&&(routeName == '/applyleave'||routeName == '/leaves')){
+        if ((role == 1) && (routeName == '/applyleave' || routeName == '/leaves')) {
             redirectFlag = true
         }
         if (redirectFlag) {

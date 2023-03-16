@@ -17,12 +17,13 @@ import Invite from './pages/HR/invite';
 import AddProjectPage from './pages/HR/addproject';
 import AddTeamPage from './pages/HR/addteam';
 import Loader from './loader/loader';
-import EmployeeList from './pages/HR/employeeList';
+// import EmployeeList from './pages/HR/employeeList';
 import { createContext, useState } from "react";
 import DataContext from './context/DataContext';
 import Layout from './layout/Layout';
 import Unauthorized from './pages/Unauthorized';
 import PageNotFound from './pages/PageNotFound';
+import EmployeeList from './components/employeeList';
 
 export const LoaderContext = createContext(null);
 
@@ -71,7 +72,7 @@ function App() {
                   {/* <Route path="/Admin_leave_request" element={<LeaveRequests />} /> */}
                   {/* <Route path="/layout" element={<Layout />} /> */}
 
-                  {/* <Route path="/employee_list" element={<EmployeeList />} /> */}
+                  <Route path="/employee_list" element={<EmployeeList />} />
                   <Route  path="*" component={<PageNotFound />} />
                 </Routes>
             </div>
