@@ -21,6 +21,8 @@ import EmployeeList from './pages/HR/employeeList';
 import { createContext, useState } from "react";
 import DataContext from './context/DataContext';
 import Layout from './layout/Layout';
+import Unauthorized from './pages/Unauthorized';
+import PageNotFound from './pages/PageNotFound';
 
 export const LoaderContext = createContext(null);
 
@@ -50,25 +52,27 @@ function App() {
           <BrowserRouter>
             <div className='App'>
                 <Routes>
-                  <Route path="/" element={<Login />} />
-                  <Route path="/dashboardpage" element={<Dashboard />} />
+                  <Route exact  path="/" element={<Login />} />
+                  <Route exact  path="/dashboardpage" element={<Dashboard />} />
                   {/* <Route path="/dashboard" element={<Dashboardpage />} /> */}
                   {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-                  <Route path="/setting" element={<Setting />} />
-                  <Route path="/applyleave" element={<ApplyLeave />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/leaves" element={<Leaves />} />
-                  <Route path="/adduser" element={<AddUser />} />
-                  <Route path="/leaverequest" element={<LeaveRequest />} />
+                  <Route exact  path="/setting" element={<Setting />} />
+                  <Route exact  path="/applyleave" element={<ApplyLeave />} />
+                  <Route exact  path="/profile" element={<Profile />} />
+                  <Route exact  path="/leaves" element={<Leaves />} />
+                  <Route exact  path="/adduser" element={<AddUser />} />
+                  <Route exact  path="/leaverequest" element={<LeaveRequest />} />
                   {/* <Route path="/comments" element={<Comment />} /> */}
                   {/* <Route path="/event" element={<Event />} /> */}
-                  <Route path="/invite" element={<Invite />} />
+                  <Route exact  path="/invite" element={<Invite />} />
+                  <Route exact  path="/401" element={<Unauthorized />} />
                   {/* <Route path="/addproject" element={<AddProjectPage />} /> */}
                   {/* <Route path="/project/:code" element={<AddTeamPage />} /> */}
                   {/* <Route path="/Admin_leave_request" element={<LeaveRequests />} /> */}
                   {/* <Route path="/layout" element={<Layout />} /> */}
 
                   {/* <Route path="/employee_list" element={<EmployeeList />} /> */}
+                  <Route  path="*" component={<PageNotFound />} />
                 </Routes>
             </div>
           </BrowserRouter>

@@ -48,10 +48,34 @@
     float: left;
 
 }
-.update-setting-btn{
+
+.update-setting-btn {
     background: #2373B2;
     border: none;
     color: #fff;
     padding: 9px 66px;
     float: left;
+
+}
+
+.search-leave-record-btn {
+    background: #2373B2;
+    border: none;
+    color: #fff;
+    padding: 9px 66px;
+    float: left;
+
+}
+
+.Unauthorized-btn a,
+.Unauthorized-btn a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+.Unauthorized-btn {
+    background: #2373B2;
+    border: none;
+    color: #fff;
+    padding: 9px 66px;
 }

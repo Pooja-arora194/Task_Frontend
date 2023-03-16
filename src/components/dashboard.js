@@ -397,7 +397,7 @@ function Dashboard(props) {
 
             axios.post(`${BASE_URL}/comment/${postid}`, { content: content }, token)
                 .then((res) => {
-
+                    setReloadApi(!reloadApi)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -439,7 +439,7 @@ function Dashboard(props) {
 
         axios.put(`${BASE_URL}/edit_comment/`, { _id: commentid, post_id: postpageid, content: editcontent })
             .then((res) => {
-
+                setReloadApi(!reloadApi)
             })
             .catch((err) => {
                 console.log(err);
@@ -451,13 +451,15 @@ function Dashboard(props) {
         setEditComment(false);
     };
 
-    const delete_comment = (e, id, element) => {
+    const delete_comment = (e, id, element, commentIndex, postIndex) => {
         e.preventDefault();
 
         axios.post(`${BASE_URL}/delete_comment`, { _id: id, post_id: element })
             .then((res) => {
-
-
+                toast.success("Deleted SuccessFully")
+                let tmp = [...allpost]
+                tmp[postIndex].x.comment.splice(commentIndex, 1)
+                setAllPost([...tmp])
             })
             .catch((err) => {
                 console.log(err);
@@ -478,7 +480,7 @@ function Dashboard(props) {
                             </div>
                             <div className='col-4'>
                                 <Typography>
-                                {user?.role == 2 && <button className='newpost_btn' onClick={nameShowModal}>New Post</button>}
+                                    {user?.role == 2 && <button className='newpost_btn' onClick={nameShowModal}>New Post</button>}
 
 
 
@@ -624,7 +626,43 @@ function Dashboard(props) {
                                                                     <Card sx={{ minWidth: 200, marginTop: 4, padding: 0 }} className="card_events">
                                                                         <CardContent sx={{ paddingBottom: 0 }}>
                                                                             {/* <Typography sx={{ mb: 10, width: 200, height: 10 }} > */}
-                                                                            <div className="comment-header">
+                                                                            <div className="row">
+                                                                                <div className="col-3">
+                                                                                    <Avatar className='avatar_img' alt={item.userId?.name} src={item.userId?.image} />
+                                                                                </div>
+                                                                                <div className="col-9">
+                                                                                    <div><h6> {item.userId?.name}</h6></div>
+                                                                                    <div>  {item.content}</div>
+                                                                                    <Modal
+                                                                                        open={editcomment}
+                                                                                        title="Edit Comment"
+                                                                                        onOk={editCommentOk}
+                                                                                        onCancel={editCommentCancel}
+                                                                                        footer={[
+
+                                                                                            <Button key="submit" type="primary" onClick={editCommentOk}>
+                                                                                                Edit
+                                                                                            </Button>,
+
+                                                                                        ]}
+                                                                                    >
+                                                                                        <label>Edit Comment</label>
+                                                                                        <textarea name="content" className="form-control edit_comment" onChange={(e) => { setEditContent(e.target.value) }}></textarea>
+                                                                                    </Modal>
+                                                                                    {user.id == item.userId?.id
+                                                                                        ? <div className="edit-post-icon">
+                                                                                            <ModeEditIcon className="edit_comment"
+                                                                                                onClick={(e) => { showEditComment(e, item._id, element.x._id) }}></ModeEditIcon>
+                                                                                            <DeleteIcon className="delete_comment" onClick={(e) => { delete_comment(e, item._id, element.x._id, i, index) }}> </DeleteIcon>
+                                                                                        </div>
+                                                                                        :
+                                                                                        <>
+
+                                                                                        </>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            {/* <div className="comment-header">
                                                                                 <div className="">
                                                                                     <Avatar className='avatar_img' alt={item.userId?.name} src={item.userId?.image} />
                                                                                 </div>
@@ -635,41 +673,8 @@ function Dashboard(props) {
                                                                                     </div>
 
                                                                                 </div>
-                                                                            </div>
-                                                                            <div className="row">
-                                                                                <div className="col-3">
+                                                                            </div> */}
 
-                                                                                </div>
-                                                                                <div className="col-9 content">
-                                                                                    <h6>  {item.content}</h6>
-                                                                                    <h7 style={{ "float": "right" }}>
-
-
-
-                                                                                        <Modal
-                                                                                            open={editcomment}
-                                                                                            title="Edit Comment"
-                                                                                            onOk={editCommentOk}
-                                                                                            onCancel={editCommentCancel}
-                                                                                            footer={[
-
-                                                                                                <Button key="submit" type="primary" onClick={editCommentOk}>
-                                                                                                    Edit
-                                                                                                </Button>,
-
-                                                                                            ]}
-                                                                                        >
-                                                                                            <label>Edit Comment</label>
-                                                                                            <textarea name="content" className="form-control edit_comment" onChange={(e) => { setEditContent(e.target.value) }}></textarea>
-                                                                                        </Modal>
-                                                                                        {/* <ModeEditIcon className="edit_comment"
-                                                                                        onClick={(e) => { showEditComment(e, item._id, element.x._id) }}></ModeEditIcon>
-                                                                                    <DeleteIcon className="delete_comment" onClick={(e) => { delete_comment(e, item._id, element.x._id) }}> </DeleteIcon> */}
-                                                                                    </h7>
-
-                                                                                </div>
-
-                                                                            </div>
 
                                                                             {/* </Typography> */}
 

@@ -272,7 +272,6 @@ function ApplyLeave() {
             <div className="apply-leaves-main-layout">
                 <div className="container ">
                     <h3 className="page-heading">Apply Leave</h3>
-
                     <div className="row avail-leaves-card-row">
                         <div className="col-md-4">
                             <div className=" avail-leaves-card">

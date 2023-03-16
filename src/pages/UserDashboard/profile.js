@@ -35,7 +35,7 @@ function Profile() {
     const { token } = theme.useToken();
 
 
-    const onPanelChange = (value, mode ) => {
+    const onPanelChange = (value, mode) => {
     };
 
     const wrapperStyle = {
@@ -151,118 +151,38 @@ function Profile() {
                     </div>
                     <div className="col-md-4">
                         <div style={wrapperStyle} className="mt-4" >
-
                             <Calendar fullscreen={false} onPanelChange={onPanelChange} />
-
                         </div>
-
-
-
-
-                    </div>
-                    <div className="row ">
-                        <label className="text-start mt-3"><b>My Projects</b></label>
-                        <div className="col-md-3 mt-4">
-                            <Card sx={{ minWidth: 50 }}>
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        Word of the Day
-                                    </Typography>
-                                    <Typography variant="h5" component="div">
-                                        be{bull}nev{bull}o{bull}lent
-                                    </Typography>
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        adjective
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        well meaning and kindly.
-                                        <br />
-                                        {'"a benevolent smile"'}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size="small">Learn More</Button>
-                                </CardActions>
-                            </Card>
-
-
-                        </div>
-                        <div className="col-md-5 mt-4">
-                            <Card sx={{ minWidth: 50 }}>
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        Word of the Day
-                                    </Typography>
-                                    <Typography variant="h5" component="div">
-                                        be{bull}nev{bull}o{bull}lent
-                                    </Typography>
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        adjective
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        well meaning and kindly.
-                                        <br />
-                                        {'"a benevolent smile"'}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size="small">Learn More</Button>
-                                </CardActions>
-                            </Card>
-
-
-                        </div>
-                        <div className="col-md-3">
+                        <div className="col-md-12">
                             <label className="text-start mt-3"><b>Leave Quota</b></label>
-
-
-                            <>
-                                <div className="row mt-3 p-2">
-                                    <div className="col-sm-6">
-                                        Casual Leave
-                                    </div>
-
-
-                                    <div className="col-sm-6">
-                                        {profile.leave?.casual_leave >= 0 ? profile.leave?.casual_leave : 0}
-                                    </div>
-
-
+                            <div className="row mt-3 p-2">
+                                <div className="col-sm-6">
+                                    Casual Leave
                                 </div>
-                                <div className="row mt-3 p-2">
-                                    <div className="col-sm-6">
-                                        Sick Leave
-                                    </div>
-
-
-                                    <div className="col-sm-6">
-                                        {profile.leave?.sick_leave >= 0 ? profile.leave?.sick_leave : 0}
-                                        {/* {profile.leave?.sick_leave} */}
-                                    </div>
-
-
+                                <div className="col-sm-6">
+                                    {profile.leave?.casual_leave >= 0 ? profile.leave?.casual_leave : 0}
                                 </div>
-                                <div className="row mt-3 p-2">
-                                    <div className="col-sm-6">
-                                        Paid Off
-                                    </div>
-
-
-                                    <div className="col-sm-6">
-                                        {calculatePaidOff(profile.leave?.sick_leave, profile.leave?.casual_leave)}
-                                    </div>
-
-
+                            </div>
+                            <div className="row mt-3 p-2">
+                                <div className="col-sm-6">
+                                    Sick Leave
                                 </div>
-                            </>
-
-
-
-
+                                <div className="col-sm-6">
+                                    {profile.leave?.sick_leave >= 0 ? profile.leave?.sick_leave : 0}
+                                    {/* {profile.leave?.sick_leave} */}
+                                </div>
+                            </div>
+                            <div className="row mt-3 p-2">
+                                <div className="col-sm-6">
+                                    Paid Off
+                                </div>
+                                <div className="col-sm-6">
+                                    {calculatePaidOff(profile.leave?.sick_leave, profile.leave?.casual_leave)}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </LayoutTemplate>
     )

@@ -3,33 +3,13 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { BASE_URL } from "../../baseUrl";
-import Header from "../utils/header";
 import { useNavigate } from "react-router-dom";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import { LoaderContext } from '../../App.js'
-import { Table, Modal } from 'antd'
+import { Table, Menu, Dropdown } from 'antd'
 import moment from 'moment'
 import LayoutTemplate from "../../layout/Layout";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 0;
-
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
-
 
 
 function LeaveRequest() {
@@ -41,9 +21,11 @@ function LeaveRequest() {
     const [open, setOpen] = useState(false);
     const [leaveData, setLeaveData] = useState([])
     const [leaveId, setLeaveId] = useState('');
+    const [searchByName, setSearchByName] = useState('')
+    const [allData, setAllData] = useState([])
+
     const showModal = (e, id) => {
         e.preventDefault();
-
         setLeaveId(id)
         setOpen(true);
     };
@@ -55,10 +37,21 @@ function LeaveRequest() {
             setOpen(false);
         }, 3000);
     };
+    const search = () => {
+        if (!searchByName) {
+            toast.error("Please Enter Name")
+            return
+        }
+        let tmp = [...allData]
+        const result = tmp.filter(value => value.userId.name.toLowerCase().includes(searchByName.toLowerCase()))
+        console.log(result, "search")
+        setLeaveData(result)
+    }
+    const clearFilter = () => {
+        setLeaveData(allData)
+        setSearchByName('')
+    }
 
-    const handleCancel = () => {
-        setOpen(false);
-    };
 
     const columns = [
         {
@@ -147,21 +140,41 @@ function LeaveRequest() {
                     {record.status == 'pending' ? ""
                         :
                         <>
-                            <MoreVertIcon onClick={(e) => { showModal(e, record._id) }} />
-                            <Modal
-                                open={open}
-                                title="Edit Status"
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                footer={[
+                            <Dropdown
+
+                                overlay={(
+                                    <Menu>
+
+                                        {record.status == "approved" ?
+                                            <Menu.Item key="0" disabled>
+                                                Approve
+                                            </Menu.Item>
+                                            :
+                                            <Menu.Item key="0" onClick={(e) => { list(e, record.userId.id, record.leave.name, record._id) }}>
+                                                Approve
+                                            </Menu.Item>
+                                        }
+                                        {record.status == "rejected" ?
+                                            <Menu.Item key="1" disabled>
+                                                Deny
+                                            </Menu.Item>
+                                            :
+                                            <Menu.Item key="1" onClick={(e) => { DenyLeave(e, record._id) }}>
+                                                Deny
+                                            </Menu.Item>
+                                        }
 
 
+                                    </Menu>
+                                )}
+                                trigger={['click']}>
+                                <a className="ant-dropdown-link"
+                                    onClick={e => e.preventDefault()}>
+                                    <MoreVertIcon />
 
-                                ]}
-                            >
-                                <button className="approved-btn m-3" onClick={(e) => { EditLeave(e) }}>Approve</button>
-                                <button className="deny-btn" onClick={(e) => { DenyLeave(e) }}>Deny</button>
-                            </Modal>
+                                </a>
+                            </Dropdown>
+
                         </>
                     }
                 </>
@@ -169,9 +182,7 @@ function LeaveRequest() {
             ),
         },
     ];
-
-    const EditLeave = (e) => {
-        e.preventDefault();
+    const DenyLeave = (e, apply_leave_id) => {
         let authtokens = localStorage.getItem("authtoken");
         let token = {
             headers: {
@@ -180,10 +191,8 @@ function LeaveRequest() {
 
             },
         }
-
-        axios.put(`${BASE_URL}/edit_leave_approved/${leaveId} `, {}, token
-
-        )
+        console.log(apply_leave_id)
+        axios.put(`${BASE_URL}/edit_leave_deny/${apply_leave_id}`, {}, token)
             .then((res) => {
                 console.log("res", res.data)
                 allLeaves()
@@ -192,33 +201,6 @@ function LeaveRequest() {
             })
             .catch((err) => {
                 console.log(err);
-
-            });
-    }
-
-    const DenyLeave = (e) => {
-        e.preventDefault();
-        let authtokens = localStorage.getItem("authtoken");
-        let token = {
-            headers: {
-                token: authtokens,
-                "Content-Type": "application/json",
-
-            },
-        }
-
-        axios.put(`${BASE_URL}/edit_leave_deny/${leaveId} `, {}, token
-
-        )
-            .then((res) => {
-                console.log("res", res.data)
-                allLeaves()
-                setOpen(false)
-
-            })
-            .catch((err) => {
-                console.log(err);
-
             });
     }
     const allLeaves = () => {
@@ -249,6 +231,7 @@ function LeaveRequest() {
                 .then((res) => {
                     setRequest(res.data)
                     setLeaveData(res.data)
+                    setAllData(res.data)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -313,6 +296,28 @@ function LeaveRequest() {
             <ToastContainer></ToastContainer>
             <div className="container">
                 <h5 className="page-heading"><b>Leave Requests</b></h5>
+                <div className="row justify-content-between" style={{ alignItems: "center" }}>
+                    <div className="col-md-5">
+                        <input placeholder="Search By Name" className="add_userInput" value={searchByName}
+                            onChange={(e) => {
+                                setSearchByName(e.target.value)
+                            }}
+                        />
+                    </div>
+                    {/* <div className="col-md-3">
+                        <input placeholder="Search By Name" className="add_userInput"/>
+                    </div> */}
+                    <div className="col-md-5">
+                        <div className="row">
+                            <div className="col-md-5">
+                                <button className="search-leave-record-btn" onClick={search}>Search</button>
+                            </div>
+                            <div className="col-md-5">
+                                <button className="search-leave-record-btn" onClick={clearFilter}>Clear Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="leave request1">
                     <h6 className="sick-leave-title-border"> Sick/Casual Leave Requests</h6>
                     {/* <div className="col-sm-8 mt-4"> */}
@@ -320,6 +325,7 @@ function LeaveRequest() {
                     <Table
                         columns={columns}
                         dataSource={leaveData}
+                    // pagination={false}
                     />
                     {/* </div> */}
                 </div>

@@ -98,6 +98,7 @@ function LayoutTemplate({ children }) {
     }, [])
 
     useEffect(() => {
+        console.log(user,'context')
         let role = user?.role
         let routeName = location.pathname
         console.log(routeName, 'flow1', role)
@@ -172,21 +173,49 @@ function LayoutTemplate({ children }) {
                             ))}
                         </List>
                     : role == 1 ?
+                        routeName == '/dashboardpage' ?
+                            <List>
+                                <div className='avatar'>
+                                    <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
 
-                        <List className='side_links'>
-                            {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/admin_leave_request">Leave Requests</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
-                                // <Link to="/employee_list">Employee Records</Link>
-                            ].map((text, index) => (
+                                </div>
+                                <div className='profile_name'>
+                                    <h5 className='mt-4 '>{user.name}</h5>
+                                    {/* <h5 className='mt-1'>#{user.emp_id}</h5> */}
+                                </div>
+                                <div className='profile_details'>
 
-                                <ListItemButton key={index}>
-                                    <ListItemIcon>
 
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
+                                    <div className='row user_info'>
+                                        <p>Designation </p><p className="fade_info">{user.designation}</p>
+                                        <p>Email </p><p className="fade_info">{user.email}</p>
+                                        {/* <p>Phone No </p><p className="fade_info">{user.phonenumber}</p> */}
+                                        {/* <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p> */}
+                                        {/* <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p> */}
+                                    </div>
+                                </div>
+                                <div className='logout_button mt-4'>
+                                    <button className='btn btn-primary' onClick={logout}>Logout</button>
 
-                            ))}
-                        </List>
+                                </div>
+                            </List>
+
+                            :
+
+                            <List className='side_links'>
+                                {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/leaverequest">Leave Requests</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
+                                    // <Link to="/employee_list">Employee Records</Link>
+                                ].map((text, index) => (
+
+                                    <ListItemButton key={index}>
+                                        <ListItemIcon>
+
+                                        </ListItemIcon>
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+
+                                ))}
+                            </List>
 
                         :
                         role == 0 ?
@@ -252,6 +281,19 @@ function LayoutTemplate({ children }) {
             </div >
         )
         setSideBarOptions(drawer)
+        let redirectFlag = false
+        if ((role == 0 && routeName == '/adduser') || (role == 0 && routeName == '/leaverequest' && user.profile != 'team_leader')) {
+            redirectFlag = true
+        }
+        if (user?.profile == 'team_leader' && routeName == '/adduser') {
+            redirectFlag = true
+        }
+        if((role==1)&&(routeName == '/applyleave'||routeName == '/leaves')){
+            redirectFlag = true
+        }
+        if (redirectFlag) {
+            navigate('/401')
+        }
         setisLoading(false)
 
 
