@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Table } from 'antd';
+import { Calendar, Card, Table } from 'antd';
 import { BASE_URL } from '../../baseUrl';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { LoaderContext } from '../../App.js'
 import moment from 'moment'
 import LayoutTemplate from '../../layout/Layout';
+import { CardContent } from '@mui/material';
 function Leaves() {
     const { showLoader, hideLoader } = useContext(LoaderContext)
     const navigate = useNavigate();
@@ -132,8 +133,8 @@ function Leaves() {
 
     return (
         <LayoutTemplate>
-            <div className='container'>
-                <div className='row'>
+            <div className='container class-leave-quota'>
+                {/* <div className='row'>
                     <div className='col-md-10'>
                         <h4 className='page-heading'>Leave Quota</h4>
                     </div>
@@ -175,6 +176,83 @@ function Leaves() {
                                 dataSource={leavevalue}
                             />
                         </div>
+                    </div>
+                </div> */}
+
+                <div className='row'>
+                    <div className='col-12'>
+                        <Link to="/applyleave">
+                            <button className='apply-leave-btn'>Apply Leaves</button>
+                        </Link>
+                    </div>
+                </div>
+                <h4 className='page-heading'>Leave Balance</h4>
+                <div className='row justify-content-between'>
+                    <div className='col-md-7 mb-2'>
+                        <Card sx={{ minWidth: 200, borderRadius: 0, boxShadow: "none", padding: "none" }} bodyStyle={{ padding: "0" }} className="leave-balance-div">
+                            <CardContent sx={{ boxShadow: "none", padding: 3 }} >
+                                <div className='row'>
+                                    <div className='col-4'></div>
+                                    <div className='col-4 leave-card-text text-align-center'>Pending</div>
+                                    <div className='col-4 leave-card-text text-align-center'>Availed</div>
+                                </div>
+                            </CardContent>
+                            <CardContent sx={{ boxShadow: "none", padding: 3, background: '#F2F2F2' }}>
+                                <div className='row'>
+                                    <div className='col-4 leave-card-text'>Earned Leaves</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                </div>
+                            </CardContent>
+                            <CardContent sx={{ boxShadow: "none", padding: 3 }}>
+                                <div className='row'>
+                                    <div className='col-4 leave-card-text'>Sick Leaves</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                </div>
+                            </CardContent>
+                            <CardContent sx={{ boxShadow: "none", padding: 3, background: '#F2F2F2' }}>
+                                <div className='row'>
+                                    <div className='col-4 leave-card-text'>Casual Leaves</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>02</div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <h4 className='page-heading'>Leave Balance</h4>
+                        {
+                            leavevalue?.length > 0 ?
+                                (
+                                    leavevalue.map((item, index) => {
+                                        return <Card key={index} sx={{ minWidth: 200, borderRadius: "0px", boxShadow: "none", padding: "none" }} bodyStyle={{ padding: "0" }} className="leave-balance-div">
+                                            <CardContent sx={{ boxShadow: "none", padding: 3 }} >
+                                                <div className='row'>
+                                                    <div className='col-4 leave-type '>{item.leave}</div>
+                                                    <div className='col-4 from-to-date text-align-center'> {moment(item.from_date).format('DD MMM YYYY')} {item.to_date && '-'} {item.to_date && moment(item.to_date).format('DD MMM YYYY')}</div>
+                                                    <div className='col-4 status text-align-center'>
+                                                        <span
+                                                            className={item.status == 'pending' || item.status == 'rejected' ? 'status-pending' : "status-approved"}
+                                                        >{item.status}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    })
+                                ) :
+                                (
+                                    <Card sx={{ minWidth: 200, borderRadius: "0px", boxShadow: "none", padding: "none" }} bodyStyle={{ padding: "0" }} className="leave-balance-div">
+                                        <CardContent sx={{ boxShadow: "none", padding: 3 }} >
+                                            No Record Found
+                                        </CardContent>
+                                    </Card>
+                                )
+
+                        }
+                    </div>
+                    <div className='col-md-4'>
+                        <Calendar fullscreen={false} />
+
                     </div>
                 </div>
             </div>

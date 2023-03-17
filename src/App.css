@@ -27,6 +27,7 @@
 
 body {
   text-decoration: none !important;
+  background-color: #e6e5e5 !important;
 }
 
 .center {
@@ -153,11 +154,7 @@ select.form-control.add_userInput {
 /* .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiCard-root.card_events.css-1geropv-MuiPaper-root-MuiCard-root {
   width: 275px;
 } */
-.card_events {
-  /* width: 275px; */
-  border-left: 5px solid #2373B2;
 
-}
 
 
 .announcement {
@@ -204,13 +201,10 @@ button.ant-btn.css-dev-only-do-not-override-sk7ap8.ant-btn-default.mt-3.addbutto
 }
 
 header.MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation4.MuiAppBar-root.MuiAppBar-colorPrimary.MuiAppBar-positionFixed.mui-fixed {
-  background: #000;
+  background: #000C16;
   width: 100%;
 }
 
-.row.announcement_main {
-  margin-top: 33px;
-}
 
 main.MuiBox-root .row {
   margin-right: 2rem;
@@ -256,7 +250,7 @@ fieldset.MuiOutlinedInput-notchedOutline {
 
 .avatar_dropdown {
   display: flex;
-  border-left: 2px solid #fff;
+  /* border-left: 2px solid #fff; */
   padding-left: 22px;
   gap: 16px;
   justify-content: center;
@@ -313,7 +307,7 @@ fieldset.MuiOutlinedInput-notchedOutline {
 
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-elevation0.MuiDrawer-paper.MuiDrawer-paperAnchorLeft.MuiDrawer-paperAnchorDockedLeft {
   /* width: 20%; */
-  background-color: #000;
+  background-color: #000C16;
   height: 100vh;
   overflow: hidden;
 }
@@ -324,7 +318,20 @@ fieldset.MuiOutlinedInput-notchedOutline {
 
 .static_width.layout {
   /* padding-left: 25px; */
-  margin-top: 100px;
+  background: #e6e5e5;
+  margin-top: 83px;
+  height: 100%;
+  padding-top: 30px;
+}
+
+.applyleavedec {
+  display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    align-content: stretch;
+    gap: 3px;
+    justify-content: space-evenly;
 }
 
 
@@ -386,14 +393,20 @@ fieldset.MuiOutlinedInput-notchedOutline {
   height: 46px;
 }
 
-.status {
+.status-rejected,.status-pending {
   color: red;
+  text-transform: capitalize;
+}
+.status-approved {
+  color: rgba(15, 109, 19, 1);
+  text-transform: capitalize;
+
 }
 
 .avail-leaves-card {
   display: flex;
   gap: 2rem;
-  padding: 13px;
+  margin: 13px;
   align-items: center;
 }
 
@@ -414,9 +427,10 @@ fieldset.MuiOutlinedInput-notchedOutline {
 
 .avail-leaves-card .count {
   font-size: 48px;
-  color: #E8BA18;
+  color: #000000;
   font-weight: 500px;
   line-height: 72px;
+  font-family: 'Poppins'
 }
 
 .avail-leaves-card .heading {
@@ -532,7 +546,7 @@ fieldset.MuiOutlinedInput-notchedOutline {
   }
 
   .row.announcement_main {
-    margin-top: 103px;
+    /* margin-top: 103px; */
     align-items: center;
     /* justify-content: space-between; */
   }

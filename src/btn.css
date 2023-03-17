@@ -37,6 +37,7 @@
     color: #fff;
     border: none;
     padding: 8px 40px;
+    border-radius: 5px;
     float: right;
 }
 
@@ -45,7 +46,7 @@
     border: none;
     color: #fff;
     padding: 9px 32px;
-    float: left;
+    float: right;
 
 }
 

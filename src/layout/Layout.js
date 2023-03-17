@@ -108,11 +108,46 @@ function LayoutTemplate({ children }) {
         let drawer = (
             <div>
                 {/* <Toolbar /> */}
-                <img src="./logo.png" style={{ padding: 10 }} ></img>
-                <Divider className='nav_divider text-center' />
+                <img src="./logo.png" style={{ padding: 30 }} ></img>
+                {/* <Divider className='nav_divider text-center' /> */}
 
                 {role == 2 ?
-                    routeName == '/dashboardpage' ?
+
+                    <List>
+                        <div className='avatar'>
+                            <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
+
+                        </div>
+                        <div className='profile_name'>
+                            <h5 className='mt-4 '>{user.name}</h5>
+                            <p className='mt-3'>#{user.emp_id}</p>
+                        </div>
+                        <div className='profile_details'>
+
+
+                            <div className='row user_info'>
+                                <p>Designation </p><p className="fade_info">{user.designation}</p>
+                                <p>Email </p><p className="fade_info">{user.email}</p>
+                                <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
+                                <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
+                                <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                        <div className='logout_button mt-4'>
+                            <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
+
+                        </div>
+                    </List>
+
+
+                    : role == 1 ?
+
                         <List>
                             <div className='avatar'>
                                 <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
@@ -120,7 +155,7 @@ function LayoutTemplate({ children }) {
                             </div>
                             <div className='profile_name'>
                                 <h5 className='mt-4 '>{user.name}</h5>
-                                <h5 className='mt-1'>#{user.emp_id}</h5>
+                                {/* <h5 className='mt-1'>#{user.emp_id}</h5> */}
                             </div>
                             <div className='profile_details'>
 
@@ -128,52 +163,22 @@ function LayoutTemplate({ children }) {
                                 <div className='row user_info'>
                                     <p>Designation </p><p className="fade_info">{user.designation}</p>
                                     <p>Email </p><p className="fade_info">{user.email}</p>
-                                    <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
-                                    <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
-                                    <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
-
-
+                                    {/* <p>Phone No </p><p className="fade_info">{user.phonenumber}</p> */}
+                                    {/* <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p> */}
+                                    {/* <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p> */}
                                 </div>
-
-
-
-
                             </div>
                             <div className='logout_button mt-4'>
                                 <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
-
                             </div>
                         </List>
 
+
+
+
+
                         :
-                        <List className='side_links'>
-
-                            {[
-                                <Link to="/dashboardpage">Dashboard </Link>,
-                                <Link to="/profile">Profile </Link>,
-                                <Link to="/leaves">Leave Quota</Link>,
-                                <Link to="/applyleave">Apply Leave </Link>,
-                                <Link to="/leaverequest">Leave Request</Link>,
-                                <Link to="/adduser">Add Employee</Link>,
-                                // <Link to="/invite">Employee List</Link>,
-                                // <Link to="/addproject">Add Project</Link>,
-
-                                <Link to="/employee_list">Employee Records</Link>,
-
-
-                            ].map((text, index) => (
-
-                                <ListItemButton key={index}>
-                                    <ListItemIcon>
-
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-
-                            ))}
-                        </List>
-                    : role == 1 ?
-                        routeName == '/dashboardpage' ?
+                        role == 0 ?
                             <List>
                                 <div className='avatar'>
                                     <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
@@ -181,7 +186,7 @@ function LayoutTemplate({ children }) {
                                 </div>
                                 <div className='profile_name'>
                                     <h5 className='mt-4 '>{user.name}</h5>
-                                    {/* <h5 className='mt-1'>#{user.emp_id}</h5> */}
+                                    <h5 className='mt-1'>#{user.emp_id}</h5>
                                 </div>
                                 <div className='profile_details'>
 
@@ -189,95 +194,21 @@ function LayoutTemplate({ children }) {
                                     <div className='row user_info'>
                                         <p>Designation </p><p className="fade_info">{user.designation}</p>
                                         <p>Email </p><p className="fade_info">{user.email}</p>
-                                        {/* <p>Phone No </p><p className="fade_info">{user.phonenumber}</p> */}
-                                        {/* <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p> */}
-                                        {/* <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p> */}
+                                        <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
+                                        <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
+                                        <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
                                     </div>
                                 </div>
                                 <div className='logout_button mt-4'>
-                                    <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
+                                    {user?.profile == 'team_leader' ?
+                                        <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
+                                        :
+                                        <button className='btn btn-primary' onClick={logout}>Logout</button>
+
+                                    }
+
                                 </div>
                             </List>
-
-                            :
-
-                            <List className='side_links'>
-                                {[<Link to="/dashboardpage">Dashboard</Link>, <Link to="/profile" className="header_toggle">Profile</Link>, <Link to="/leaverequest">Leave Requests</Link>, <Link to="/adduser">Add Employee</Link>, <Link to="/invite">Employee List</Link>,
-                                    // <Link to="/employee_list">Employee Records</Link>
-                                ].map((text, index) => (
-
-                                    <ListItemButton key={index}>
-                                        <ListItemIcon>
-
-                                        </ListItemIcon>
-                                        <ListItemText primary={text} />
-                                    </ListItemButton>
-
-                                ))}
-                            </List>
-
-                        :
-                        role == 0 ?
-                            routeName == '/dashboardpage' ?
-                                <List>
-                                    <div className='avatar'>
-                                        <Avatar className='avatar_img' alt={user.name} src={BASE_URL + "/" + user.image} />
-
-                                    </div>
-                                    <div className='profile_name'>
-                                        <h5 className='mt-4 '>{user.name}</h5>
-                                        <h5 className='mt-1'>#{user.emp_id}</h5>
-                                    </div>
-                                    <div className='profile_details'>
-
-
-                                        <div className='row user_info'>
-                                            <p>Designation </p><p className="fade_info">{user.designation}</p>
-                                            <p>Email </p><p className="fade_info">{user.email}</p>
-                                            <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
-                                            <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
-                                            <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
-                                        </div>
-                                    </div>
-                                    <div className='logout_button mt-4'>
-                                        {user?.profile == 'team_leader' ?
-                                            <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
-                                            :
-                                            <button className='btn btn-primary' onClick={logout}>Logout</button>
-
-                                        }
-
-                                    </div>
-                                </List>
-
-                                :
-
-                                <List className='side_links'>
-                                    {[<Link to="/dashboardpage">Dashboard</Link>,
-                                    <Link to="/profile">Profile</Link>,
-
-                                    <Link to="/leaves">Leaves</Link>,
-                                    <Link to="/applyleave">Apply Leave</Link>].map((text, index) => (
-
-                                        <ListItemButton key={index}>
-                                            <ListItemIcon>
-
-                                            </ListItemIcon>
-                                            <ListItemText primary={text} />
-                                        </ListItemButton>
-
-                                    ))}
-                                    {user?.profile == 'team_leader' &&
-                                        <>
-                                            <ListItemButton >
-                                                <ListItemIcon>
-
-                                                </ListItemIcon>
-
-                                                <ListItemText  ><Link to="/leaverequest">Team Leave Requests</Link></ListItemText>
-                                            </ListItemButton>
-                                        </>}
-                                </List>
                             : <>
                             </>
                 }
@@ -369,6 +300,7 @@ function LayoutTemplate({ children }) {
                 sx={{
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                     ml: { sm: `${drawerWidth}px` },
+                    padding: { sm: '5px' },
                 }}
             >
                 <Toolbar
@@ -382,56 +314,84 @@ function LayoutTemplate({ children }) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
 
-                    </Typography>
-                    <div className="applyleavedec">
-                        <Link to="/applyleave">
-                            <img src="apply Leave.svg" ></img>
-                            &nbsp;    Apply Leave  &nbsp;
-                        </Link>
-                        <Badge badgeContent={notifications.length} color="primary">
-                            <NotificationsIcon color="white" onClick={showModal} />
-                        </Badge>
-                        <Modal title="Notifications" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                            {notifications?.map((item, index) => {
-                                return <>
+                    <div className="row">
+                        <div className="applyleavedec col-6">
 
-                                    <div className={item.is_read ? "notificationCard" : "notificationCard unReadNotification"}>
-                                        {/* {item.type == "pending" ? `${item.userId.name} ${Notification['pending']}` : item.type == "approved" ? `` : ``} */}
-                                        <p onClick={(e) => { read_notification(e, item._id) }}>{`${item?.userId?.name} ${Notification[item.type]}`} </p>
-                                    </div>
-                                </>
-                            })}
-                            {notifications?.length < 1 ?
-                                <>
-                                    <div className="noDataFound">No Notification Found</div>
-                                </>
-                                : ''}
+                            <Link to="/applyleave">
+                                <div className="apply-leave-header-btn"><span>Apply Leave</span><img style={{ width: 20 }} src="./apply-leave-icon.png" /></div>
+                            </Link>
+                            <Badge badgeContent={notifications.length} color="primary">
+                                {/* <NotificationsIcon color="white" onClick={showModal} /> */}
+                                <img src='./notificationIcon.png' onClick={showModal} style={{ paddingLeft: 15 }} />
+                            </Badge>
+                            <Modal title="Notifications" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                                {notifications?.map((item, index) => {
+                                    return <>
+
+                                        <div className={item.is_read ? "notificationCard" : "notificationCard unReadNotification"}>
+                                            {/* {item.type == "pending" ? `${item.userId.name} ${Notification['pending']}` : item.type == "approved" ? `` : ``} */}
+                                            <p onClick={(e) => { read_notification(e, item._id) }}>{`${item?.userId?.name} ${Notification[item.type]}`} </p>
+                                        </div>
+                                    </>
+                                })}
+                                {notifications?.length < 1 ?
+                                    <>
+                                        <div className="noDataFound">No Notification Found</div>
+                                    </>
+                                    : ''}
 
 
-                        </Modal>
-                    </div>
-                    <div className="avatar_dropdown">
-                        <Avatar alt={user?.name} src={BASE_URL + "/" + user?.image} />
-                        <div className="employe_info">
-
-                            <p>{user?.name} </p>
+                            </Modal>
                         </div>
-                        <Box sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label"></InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select">
-                                    <MenuItem value={10}>
-                                        <Link to="/profile">Profile</Link></MenuItem>
+                        <div className="avatar_dropdown col-5">
+                            <Avatar alt={user?.name} src={BASE_URL + "/" + user?.image} />
+                            <div className="employe_info">
 
-                                    <MenuItem value={20} onClick={logout}>Logout</MenuItem>
+                                <p>{user?.name} </p>
+                            </div>
+                            <Box sx={{ minWidth: 120 }}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label"></InputLabel>
+                                    <Select
+                                    sx={{ backgroundClip: "black",color:"#FFF" }}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                    >
+                                        {user.role == 0 ?
+                                            <>
+                                                <MenuItem value={10}> <Link to="/dashboardpage">Dashboard</Link></MenuItem>
+                                                <MenuItem value={10}> <Link to="/leaves">Leave Quota</Link></MenuItem>
+                                                {user.profile == 'team_leader' && <MenuItem value={10}> <Link to="/leaverequest">Leave Request</Link></MenuItem>}
+                                                <MenuItem value={10}> <Link to="/profile">My Profile</Link></MenuItem>
+                                                <MenuItem value={20} onClick={logout}>Logout</MenuItem>
+                                            </>
+                                            :
+                                            <>
+                                                {user.role == 1 || user.role == 2 ?
+                                                    <>
+                                                        <MenuItem value={10}> <Link to="/dashboardpage">Dashboard</Link></MenuItem>
+                                                        <MenuItem value={10}> <Link to="/leaves">Leave Quota</Link></MenuItem>
+                                                        <MenuItem value={10}> <Link to="/profile">My Profile</Link></MenuItem>
+                                                        <MenuItem value={10}> <Link to="/employee_list">Employee List</Link></MenuItem>
+                                                        <MenuItem value={10}> <Link to="/leaverequest">Leave Requests</Link></MenuItem>
+                                                        <MenuItem value={20} onClick={logout}>Logout</MenuItem>
+                                                    </>
+                                                    :
+                                                    <>
+                                                    </>
+                                                }
+                                            </>
+                                        }
+                                        {/* <MenuItem value={10}>
+                                            <Link to="/profile">Profile</Link></MenuItem>
 
-                                </Select>
-                            </FormControl>
-                        </Box>
+                                        <MenuItem value={20} onClick={logout}>Logout</MenuItem> */}
+
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </div>
                     </div>
                 </Toolbar>
             </AppBar>

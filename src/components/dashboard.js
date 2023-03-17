@@ -354,6 +354,7 @@ function Dashboard(props) {
             .then((res) => {
 
                 setLikeVal(res.data)
+                setReloadApi(!reloadApi)
                 const filterrecord = allpost.map((val) => {
 
                     if (val.x._id == element) {
@@ -366,7 +367,7 @@ function Dashboard(props) {
             .catch((err) => {
                 console.log(err);
             }).finally(() => {
-                hideLoader()
+                // hideLoader()
             })
 
 
@@ -472,6 +473,45 @@ function Dashboard(props) {
             <div className="container">
                 <div className="row justify-content-around">
                     <div className="col-md-8">
+                        {
+                            user.role == 2 ?
+                                <>
+                                    <div className='col-7 col-sm-8 announcement'>
+                                        <h5 className="page-heading">
+                                            Create New Post
+                                        </h5>
+                                    </div>
+                                    <Card key={1} sx={{ maxWidth: 1100, boxShadow: "none", borderRadius: 0 }} className="post">
+
+
+                                        <CardContent>
+                                            <textarea placeholder="Type Something Here" style={{ width: "100%", border: "none", padding: 10 }} rows="4" />
+                                        </CardContent>
+                                        <CardContent>
+                                            <div className="row">
+                                                <div className="col-6">
+                                                    <div className="row">
+                                                        <div className="col-6">
+                                                            <img src="./attach-image.svg" style={{ paddingRight: 5 }} /> Attach Document
+                                                        </div>
+                                                        <div className="col-6">
+                                                            <img src="./attach-image1.svg" style={{ paddingRight: 5 }} />Attach Image</div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-6">
+                                                    <div className="row">
+                                                        <div className="col-12">
+                                                            <button className="newpost_btn">Post</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </>
+                                :
+                                ''
+                        }
                         <div className='row announcement_main'>
                             <div className='col-7 col-sm-8 announcement'>
                                 <h5 className="page-heading">
@@ -480,10 +520,7 @@ function Dashboard(props) {
                             </div>
                             <div className='col-4'>
                                 <Typography>
-                                    {user?.role == 2 && <button className='newpost_btn' onClick={nameShowModal}>New Post</button>}
-
-
-
+                                    {/* {user?.role == 2 && <button className='newpost_btn' onClick={nameShowModal}>New Post</button>} */}
                                     <Modal
                                         open={openname}
                                         title="Add Post"
@@ -542,29 +579,26 @@ function Dashboard(props) {
                             allpost.map((element, index) => {
                                 return (
 
-                                    <Card key={index} sx={{ maxWidth: 1100, marginTop: 10 }} className="post">
+                                    <Card key={index} sx={{ maxWidth: 1100, boxShadow: "none", borderRadius: 0 }} className="post">
                                         <CardHeader
                                             avatar={
                                                 <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" alt={profileval.name} src={BASE_URL + "/" + profileval.image} >
-
                                                 </Avatar>
                                             }
                                             action={
                                                 <Dropdown menu={{ items }} trigger={['click']} onClick={(e) => { record(element.x) }}>
                                                     <a onClick={(e) => e.preventDefault()}>
-
                                                         {user?.role == 2 && <MoreVertIcon />}
-
                                                     </a>
                                                 </Dropdown>
 
                                             } className="post_style"
                                             title={element.x.title}
-                                            subheader={moment(element.x.post_date).format('DD/MM/YYYY')}
+                                            subheader={moment(element.x.post_date).format('MMM DD, YYYY')}
                                         />
 
                                         <CardContent>
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography variant="body2" >
                                                 {element.x.description}
                                             </Typography>
                                         </CardContent>
@@ -580,30 +614,44 @@ function Dashboard(props) {
                                         </CardContent>
                                         <CardActions disableSpacing >
                                             <IconButton aria-label="add to favorites" >
-                                                {element?.isLike ? (
 
-                                                    <FavoriteIcon key={index}
+                                                {!element?.isLike ? (
+                                                    <>
+                                                        <img src="./like-icon.svg"
+                                                            onClick={(e) => { post_id(e, element.x._id, element?.isLike) }} style={{
+                                                                backgroundColor: isActive ? 'white' : '',
+                                                                color: isActive ? 'red' : '',
+                                                            }} />
 
-                                                        onClick={(e) => { post_id(e, element.x._id, element?.isLike) }} style={{
-                                                            backgroundColor: isActive ? 'white' : '',
-                                                            color: isActive ? 'red' : '',
-                                                        }} />
+                                                        {/* <FavoriteIcon key={index}
+
+                                                            onClick={(e) => { post_id(e, element.x._id, element?.isLike) }} style={{
+                                                                backgroundColor: isActive ? 'white' : '',
+                                                                color: isActive ? 'red' : '',
+                                                            }} /> */}
+                                                    </>
                                                 ) :
                                                     (
 
-                                                        <FavoriteIcon key={index} onClick={(e) => { post_id(e, element.x._id, element?.isLike) }} />
+                                                        <FavoriteIcon key={index} onClick={(e) => { post_id(e, element.x._id, element?.isLike) }}
+                                                            style={{
+                                                                backgroundColor: isActive ? 'white' : '',
+                                                                color: isActive ? 'red' : '',
+                                                            }} />
                                                     )
 
                                                 }
 
-
+                                                <span className="post-count">{element.x?.like?.length}</span>
                                             </IconButton>
                                             <IconButton aria-label="share">
 
 
 
 
-                                                <MapsUgcIcon onClick={(e) => { commentShowModal(element.x._id, index) }} />
+                                                {/* <MapsUgcIcon onClick={(e) => { commentShowModal(element.x._id, index) }} /> */}
+                                                <img src="./comment.svg" onClick={(e) => { commentShowModal(element.x._id, index) }} />
+                                                <span className="post-count">{element.x?.comment?.length}</span>
                                                 <Modal className="mt-4"
                                                     open={openComment[index]}
                                                     title="Add Comment"
@@ -703,70 +751,92 @@ function Dashboard(props) {
                         }
                     </div>
                     <div className="col-md-3">
-                        <h6 className='mt-4'><b>Upcomming Birthday's</b></h6>
-
+                        <h5 className='page-heading'>Upcomming Birthday's</h5>
                         {
-                            allemployee?.map((item, elem) => {
-                                let newDate2 = moment.utc(item.dob).format("MMM DD, YYYY");
-                                return (
+                            allemployee?.length > 0 ? (
 
+                                allemployee?.map((item, elem) => {
+                                    let newDate2 = moment.utc(item.dob).format("MMM DD, YYYY");
+                                    return (
+
+                                        <>
+
+                                            <Card key={elem} sx={{ minWidth: 200, borderRadius: 0, boxShadow: "none" }} className="card_events">
+                                                <CardContent >
+
+                                                    <div className='row'>
+                                                        <div className='col-4'>
+                                                            <Avatar className='avatar_img' alt={item.name} src={BASE_URL + "/" + item.image} />
+
+                                                        </div>
+                                                        <div className='col-8'>
+                                                            <p className="birthday-card-name-heading"> {item.name}</p>
+                                                            <div>
+                                                                <p className="birthday-card-birthdate"> {newDate2}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </CardContent>
+                                                <div className="line_"><hr /></div>
+
+                                            </Card>
+                                        </>
+                                    )
+                                })) :
+                                (
                                     <>
-
-                                        <Card key={elem} sx={{ minWidth: 200, marginTop: 4 }} className="card_events">
-                                            <CardContent>
-
-                                                <div className='row'>
-                                                    <div className='col-sm-4'>
-                                                        <Avatar className='avatar_img' alt={item.name} src={BASE_URL + "/" + item.image} />
-
-                                                    </div>
-                                                    <div className='col-sm-8'>
-                                                        {item.name}
-                                                        <div>
-                                                            {newDate2}</div>
-                                                    </div>
-                                                </div>
-
-
+                                        <Card sx={{ minWidth: 200, borderRadius: 0, boxShadow: "none" }} className="card_events">
+                                            <CardContent sx={{ textAlign: "center" }} >
+                                                No Record Found
                                             </CardContent>
                                         </Card>
                                     </>
                                 )
-                            })
                         }
-
-                        <h6 className='mt-4'><b>Upcomming Work Anniversary's </b></h6>
+                        <h4 className='page-heading'>Upcomming Anniversary's</h4>
                         {
-                            anniversary?.map((i, elem) => {
+                            anniversary?.length > 0 ? (
 
-                                return (
+                                anniversary?.map((i, elem) => {
 
+                                    return (
+
+                                        <>
+
+                                            <Card key={elem} sx={{ minWidth: 200, borderRadius: 0, boxShadow: "none" }} className="card_events">
+                                                <CardContent>
+
+                                                    <div className='row'>
+                                                        <div className='col-4'>
+                                                            <Avatar className='avatar_img' alt={i.name} src={BASE_URL + "/" + i.image} />
+                                                        </div>
+                                                        <div className='col-8'>
+                                                            <p className="birthday-card-name-heading"> {i.name}</p>
+                                                            <div className="difference">
+                                                                <p className="birthday-card-birthdate"> {moment(i.date_of_joining).format("MMM DD, YYYY")}</p>
+                                                            </div>
+                                                            <div className="difference">
+                                                                <p className="birthday-card-birthdate">{i.difference} Anniversary </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="line_"><hr /></div>
+                                                </CardContent>
+                                            </Card>
+                                        </>
+                                    )
+                                }))
+                                : (
                                     <>
-
-                                        <Card key={elem} sx={{ minWidth: 200, marginTop: 4 }} className="card_events">
-                                            <CardContent>
-
-                                                <div className='row'>
-                                                    <div className='col-sm-4'>
-                                                        <Avatar className='avatar_img' alt={i.name} src={BASE_URL + "/" + i.image} />
-                                                    </div>
-                                                    <div className='col-sm-8'>
-                                                        {i.name}
-                                                        <div className="difference pt-1">
-                                                            {moment(i.date_of_joining).format("MMM DD, YYYY")}
-                                                        </div>
-                                                        <div className="difference pt-2">
-                                                            <b>{i.difference} </b> Anniversary
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
+                                        <Card sx={{ minWidth: 200, borderRadius: 0, boxShadow: "none" }} className="card_events">
+                                            <CardContent sx={{ textAlign: "center" }} >
+                                                No Record Found
                                             </CardContent>
                                         </Card>
                                     </>
                                 )
-                            })
                         }
                     </div>
                 </div>
