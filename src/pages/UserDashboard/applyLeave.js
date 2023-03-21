@@ -425,7 +425,7 @@ function ApplyLeave() {
                                                 <label className="newinputBox-label"> To</label>
                                                 <input
                                                     type="date"
-                                                    className={submitval.leave_type == 'Half Day' ? "add_userInput formtext date cursur-disabled" : 'newInputBox'}
+                                                    className={submitval.leave_type == 'Half Day' ? "newInputBox formtext date cursur-disabled" : 'newInputBox'}
                                                     min={submitval.from_date ? moment(submitval.from_date).format('YYYY-MM-DD') : moment(new Date()).format('YYYY-MM-DD')}
                                                     placeholder="To Date"
                                                     name="to_date"

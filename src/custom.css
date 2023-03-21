@@ -7,6 +7,7 @@
 .cursur-disabled {
     cursor: not-allowed;
 }
+::-webkit-scrollbar { display: none; }
 
 .pending-text {
     text-transform: capitalize;
@@ -52,7 +53,7 @@
 }
 
 .login-template input {
-    background: #E6E6E6;
+    /* background: #E6E6E6; */
     border: none;
     width: 100%;
     margin-bottom: 20px;

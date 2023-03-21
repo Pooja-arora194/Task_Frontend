@@ -316,7 +316,7 @@ function LayoutTemplate({ children }) {
                     </IconButton>
 
                     <div className="row">
-                        <div className="applyleavedec col-6">
+                        <div className="applyleavedec col-7">
 
                             <Link to="/applyleave">
                                 <div className="apply-leave-header-btn"><span>Apply Leave</span><img style={{ width: 20 }} src="./apply-leave-icon.png" /></div>
@@ -344,7 +344,7 @@ function LayoutTemplate({ children }) {
 
                             </Modal>
                         </div>
-                        <div className="avatar_dropdown col-5">
+                        <div className="avatar_dropdown col-4">
                             <Avatar alt={user?.name} src={BASE_URL + "/" + user?.image} />
                             <div className="employe_info">
 
@@ -354,7 +354,16 @@ function LayoutTemplate({ children }) {
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label"></InputLabel>
                                     <Select
-                                    sx={{ backgroundClip: "black",color:"#FFF" }}
+                                        inputProps={{
+                                            MenuProps: {
+                                                MenuListProps: {
+                                                    sx: {
+                                                        backgroundColor: '#000C16',
+                                                        color: "#FFF"
+                                                    }
+                                                }
+                                            }
+                                        }}
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                     >
@@ -371,7 +380,7 @@ function LayoutTemplate({ children }) {
                                                 {user.role == 1 || user.role == 2 ?
                                                     <>
                                                         <MenuItem value={10}> <Link to="/dashboardpage">Dashboard</Link></MenuItem>
-                                                        <MenuItem value={10}> <Link to="/leaves">Leave Quota</Link></MenuItem>
+                                                        {user.role == 2 && <MenuItem value={10}> <Link to="/leaves">Leave Quota</Link></MenuItem>}
                                                         <MenuItem value={10}> <Link to="/profile">My Profile</Link></MenuItem>
                                                         <MenuItem value={10}> <Link to="/employee_list">Employee List</Link></MenuItem>
                                                         <MenuItem value={10}> <Link to="/leaverequest">Leave Requests</Link></MenuItem>

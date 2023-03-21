@@ -1,24 +1,89 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Calendar, Card, Table } from 'antd';
+import { Calendar, Card, Table, Modal, Menu, Dropdown } from 'antd';
 import { BASE_URL } from '../../baseUrl';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { LoaderContext } from '../../App.js'
 import moment from 'moment'
+import { ToastContainer, toast } from 'react-toastify';
 import LayoutTemplate from '../../layout/Layout';
+import { DataContext } from "../../context/DataContext";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+
 import { CardContent } from '@mui/material';
 function Leaves() {
     const { showLoader, hideLoader } = useContext(LoaderContext)
+    const { setUser, user } = useContext(DataContext)
     const navigate = useNavigate();
     const [leavevalue, setLeaveValue] = useState([]);
     const [pendingLeave, setPendingLeave] = useState({});
-    const columns = [
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [allData, setAllData] = useState([])
+    const [leaveData, setLeaveData] = useState([])
+    const [request, setRequest] = useState([]);
+    const [open, setOpen] = useState(false);
 
+
+
+
+
+    const openModel = () => {
+        setIsModalOpen(true)
+    }
+    const closeModal = () => {
+        setIsModalOpen(false)
+    }
+    const list = (e, id, item, apply_leave_id) => {
+        // e.preventDefault();
+
+
+
+        axios.post(`${BASE_URL}/update_leave/${id}`, { leave_type: item, apply_leave_id: apply_leave_id }
+
+        )
+            .then((res) => {
+
+                toast.success("Leave Approved")
+                allLeaves();
+            })
+            .catch((err) => {
+                console.log(err);
+
+            });
+
+    }
+    const cancel_request = (e, id, apply_leave_id) => {
+
+        e.preventDefault();
+
+
+        axios.put(`${BASE_URL}/cancel_leave/${id} `, { apply_leave_id: apply_leave_id }
+
+        )
+            .then((res) => {
+                toast.success("Leave Rejected")
+                allLeaves()
+
+            })
+            .catch((err) => {
+                console.log(err);
+
+            });
+    }
+
+    const columns = [
         {
-            title: 'Leave',
-            dataIndex: 'leave',
-            key: 'leave',
+            title: 'Emp ID',
+            dataIndex: ['userId', 'emp_id'],
+            key: 'name',
+
+        },
+        {
+            title: 'Name',
+            dataIndex: ['userId', 'name'],
+            key: 'name',
         },
         {
             title: 'Date From',
@@ -44,20 +109,10 @@ function Leaves() {
             ),
         },
         {
-            title: 'Applied On',
-            key: 'createdAt',
-            render: (_, record) => (
-                moment(record?.createdAt).isValid() ?
-                    <>
-                        {moment(record?.createdAt).format('DD MMM YYYY')}
-                    </>
-                    :
-                    <>
-                        N/A
-                    </>
-            ),
+            title: 'Leave',
+            dataIndex: 'leave',
+            key: 'leave',
         },
-
         {
             title: 'Days',
             key: 'leave_type',
@@ -66,7 +121,7 @@ function Leaves() {
                 moment(record?.to_date).diff(moment(record?.from_date), 'days') + 1 > 0 ?
                     <>{moment(record?.to_date).diff(moment(record?.from_date), 'days') + 1 + " Days"}</>
                     :
-                    <>Half Day</>
+                    <>half Day</>
             ),
         },
         {
@@ -74,23 +129,142 @@ function Leaves() {
             dataIndex: 'reason',
             key: 'reason',
         },
-        {
-            title: 'Status',
-            key: 'status',
-            render: (_, record) => (
 
-                <b style={{ fontWeight: 600 }} className={record.status == 'pending' ? 'pending-text' : record.status == 'approved' ? 'approved-text' : 'rejected-text'}>  {record.status}</b>
+        {
+            title: '',
+            key: 'action',
+            render: (_, record) => (
+                // <Space size="middle">
+                record.status == "approved" ? <td> <button className="approved-btn-disabled" disabled>Approved</button></td>
+                    : record.status == "pending" ?
+                        <>
+                            <td>
+                                {/* <CheckIcon className="not_approve" onClick={(e) => { list(e, element.userId.id, element.leave.name, element._id) }} /> */}
+                                <button className="approved-btn" onClick={(e) => { list(e, record.userId.id, record.leave.name, record._id) }}>Approve</button>
+                            </td>
+                            <td>
+                                {/* <CloseIcon onClick={(e) => { cancel_request(e, element.userId.id, element._id) }} /> */}
+                                <button className="deny-btn" onClick={(e) => { cancel_request(e, record.userId.id, record._id) }} >Deny</button>
+                            </td>
+                        </>
+
+                        : <button className="deny-btn-disabled" disabled>Rejected</button>
             ),
         },
+        {
+            title: '',
+            key: 'reason',
+            render: (_, record) => (
+
+                <>
+                    {record.status == 'pending' ? ""
+                        :
+                        <>
+                            <Dropdown
+
+                                overlay={(
+                                    <Menu>
+
+                                        {record.status == "approved" ?
+                                            <Menu.Item key="0" disabled>
+                                                Approve
+                                            </Menu.Item>
+                                            :
+                                            <Menu.Item key="0" onClick={(e) => { list(e, record.userId.id, record.leave.name, record._id) }}>
+                                                Approve
+                                            </Menu.Item>
+                                        }
+                                        {record.status == "rejected" ?
+                                            <Menu.Item key="1" disabled>
+                                                Deny
+                                            </Menu.Item>
+                                            :
+                                            <Menu.Item key="1" onClick={(e) => { DenyLeave(e, record._id) }}>
+                                                Deny
+                                            </Menu.Item>
+                                        }
 
 
+                                    </Menu>
+                                )}
+                                trigger={['click']}>
+                                <a className="ant-dropdown-link"
+                                    onClick={e => e.preventDefault()}>
+                                    <MoreVertIcon />
+
+                                </a>
+                            </Dropdown>
+
+                        </>
+                    }
+                </>
+
+            ),
+        },
     ];
-    const returnTwo = (value) => {
-        if (parseInt(value) < 10 && parseInt(value) > 1) {
-            return `0${value}`
+    const DenyLeave = (e, apply_leave_id) => {
+        let authtokens = localStorage.getItem("authtoken");
+        let token = {
+            headers: {
+                token: authtokens,
+                "Content-Type": "application/json",
+
+            },
         }
-        return value
+        console.log(apply_leave_id)
+        axios.put(`${BASE_URL}/edit_leave_deny/${apply_leave_id}`, {}, token)
+            .then((res) => {
+                console.log("res", res.data)
+                allLeaves()
+                setOpen(false)
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
+    const allLeaves = () => {
+        let authtokens = localStorage.getItem("authtoken");
+        let token = {
+            headers: {
+                token: authtokens,
+
+            },
+        };
+
+        if (!authtokens) {
+            navigate('/')
+        }
+        else {
+            showLoader()
+            let authtokens = localStorage.getItem("authtoken");
+            let token = {
+                headers: {
+                    token: authtokens,
+                    "Content-Type": "application/json",
+
+                },
+            }
+
+
+            axios.get(`${BASE_URL}/get_apply_leaves`, token)
+                .then((res) => {
+                    setRequest(res.data)
+                    setLeaveData(res.data)
+                    setAllData(res.data)
+                })
+                .catch((err) => {
+                    console.log(err);
+
+                }).finally(() => {
+
+                    hideLoader()
+                })
+
+        }
+    }
+
+
 
     useEffect(() => {
 
@@ -108,7 +282,7 @@ function Leaves() {
         }
         else {
             showLoader()
-
+            allLeaves()
             axios.get(`${BASE_URL}/single_user_apply_leave`, token)
                 .then((res) => {
                     setLeaveValue(res.data)
@@ -134,56 +308,19 @@ function Leaves() {
     return (
         <LayoutTemplate>
             <div className='container class-leave-quota'>
-                {/* <div className='row'>
-                    <div className='col-md-10'>
-                        <h4 className='page-heading'>Leave Quota</h4>
-                    </div>
-                    <div className='col-md-2'>
-                        <Link to="/applyleave">
-                            <button className='apply-leave-btn'>Apply Leaves</button>
-                        </Link>
-                    </div>
-                </div>
-                <div className="row avail-leaves-card-row ">
-                    <div className="col-md-4">
-                        <div className=" avail-leaves-card">
-                            <div className="count earn-leave-count"> {returnTwo(pendingLeave?.leave?.earned_leave > 0 ? pendingLeave.leave?.earned_leave : 0)}</div>
-                            <div className="heading">Earned Leaves Available</div>
+                <div className='row justify-content-end'>
+                    <div className='col-4'>
+                        <div className='row '>
+                            <div className='col-md-6 mt-2'>
+                                {/* <button className='leave-approve-btn' onClick={openModel}>Leave Approval</button> */}
+                            </div>
+                            <div className='col-md-6 mt-2'>
+                                <Link to="/applyleave">
+                                    <button className='apply-leave-btn'>Apply Leaves</button>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="col-md-4">
-                        <div className=" avail-leaves-card">
-                            <div className="count sick-leave-count"> {returnTwo(pendingLeave?.leave?.sick_leave >= 0 ? pendingLeave.leave?.sick_leave : 0)}</div>
-                            <div className="heading">Sick Leaves Available</div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className=" avail-leaves-card">
-                            <div className="count casual-leave-count">  {returnTwo(pendingLeave?.leave?.casual_leave >= 0 ? pendingLeave.leave?.casual_leave : 0)}</div>
-                            <div className="heading">Casual Leaves Available</div>
-                        </div>
-                    </div>
-
-
-                </div>
-                <div className='row mt-4'>
-                    <div className='col-md-12'>
-                        <div className='leave_request'>
-                            <h5>Leave Requests</h5>
-                            <Table
-                                columns={columns}
-                                dataSource={leavevalue}
-                            />
-                        </div>
-                    </div>
-                </div> */}
-
-                <div className='row'>
-                    <div className='col-12'>
-                        <Link to="/applyleave">
-                            <button className='apply-leave-btn'>Apply Leaves</button>
-                        </Link>
                     </div>
                 </div>
                 <h4 className='page-heading'>Leave Balance</h4>
@@ -200,22 +337,22 @@ function Leaves() {
                             <CardContent sx={{ boxShadow: "none", padding: 3, background: '#F2F2F2' }}>
                                 <div className='row'>
                                     <div className='col-4 leave-card-text'>Earned Leaves</div>
-                                    <div className='col-4 leave-card-count'>02</div>
-                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>{user.leave?.earned_leave > 0 ? user.leave?.earned_leave : 0}</div>
+                                    <div className='col-4 leave-card-count'>-</div>
                                 </div>
                             </CardContent>
                             <CardContent sx={{ boxShadow: "none", padding: 3 }}>
                                 <div className='row'>
                                     <div className='col-4 leave-card-text'>Sick Leaves</div>
-                                    <div className='col-4 leave-card-count'>02</div>
-                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>{user.leave?.sick_leave > 0 ? user.leave?.sick_leave : 0}</div>
+                                    <div className='col-4 leave-card-count'>-</div>
                                 </div>
                             </CardContent>
                             <CardContent sx={{ boxShadow: "none", padding: 3, background: '#F2F2F2' }}>
                                 <div className='row'>
                                     <div className='col-4 leave-card-text'>Casual Leaves</div>
-                                    <div className='col-4 leave-card-count'>02</div>
-                                    <div className='col-4 leave-card-count'>02</div>
+                                    <div className='col-4 leave-card-count'>{user.leave?.casual_leave > 0 ? user.leave?.casual_leave : 0}</div>
+                                    <div className='col-4 leave-card-count'>-</div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -256,6 +393,19 @@ function Leaves() {
                     </div>
                 </div>
             </div>
+            <Modal title="Notifications" open={isModalOpen}
+                bodyStyle={{ height: "100vh",marginRight:"auto" }}
+                width="70%"
+                zIndex={9999}
+                onOk={null} onCancel={closeModal} footer={null} >
+                <Table
+                    columns={columns}
+                    dataSource={leaveData}
+                // pagination={false}
+                />
+            </Modal>
+
+
         </LayoutTemplate>
     )
 }

@@ -326,12 +326,12 @@ fieldset.MuiOutlinedInput-notchedOutline {
 
 .applyleavedec {
   display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-items: center;
-    align-content: stretch;
-    gap: 3px;
-    justify-content: space-evenly;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  align-content: stretch;
+  gap: 3px;
+  justify-content: space-evenly;
 }
 
 
@@ -393,10 +393,12 @@ fieldset.MuiOutlinedInput-notchedOutline {
   height: 46px;
 }
 
-.status-rejected,.status-pending {
+.status-rejected,
+.status-pending {
   color: red;
   text-transform: capitalize;
 }
+
 .status-approved {
   color: rgba(15, 109, 19, 1);
   text-transform: capitalize;
@@ -562,10 +564,10 @@ fieldset.MuiOutlinedInput-notchedOutline {
   margin-left: 39rem;
 }
 
-ul.MuiList-root.MuiList-padding li {
+/* ul.MuiList-root.MuiList-padding li {
   color: #fff;
   opacity: 0.7;
-}
+} */
 
 .profile_details .col-sm-6.col-4 {
   padding: 23px;
@@ -604,13 +606,13 @@ button.ant-btn.css-dev-only-do-not-override-sk7ap8.ant-btn-default.form-control 
   background: rgba(0, 0, 0, 0.1);
 }
 
-ul.MuiList-root.MuiList-padding li {
+/* ul.MuiList-root.MuiList-padding li {
   color: #00080f;
   opacity: 0.7;
-}
+} */
 
 ul.MuiList-root.MuiList-padding li a {
-  color: black;
+  color: #FFF;
   text-decoration: none;
 }
 
@@ -698,6 +700,71 @@ a.events {
   width: 65%;
   word-break: break-all;
   padding-left: 10px !important;
+}
+
+.main-btn-cstm {
+  margin-left: 12px;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+button.btn.dotted-btn-class {
+  border: 2px dashed #0d6efd;
+}
+
+button.btn.btn-primary.main-btn-cstm {
+  padding: 8px 20px;
+}
+
+
+
+.border_div input {
+  border: none;
+  border-bottom: 1px solid black !important;
+}
+
+.row.container {
+  height: 350px;
+  background: white;
+  margin-top: 4%;
+}
+
+ul.rc-pagination {
+  text-align: center;
+  margin-top: 2%;
+}
+
+.search-box {
+  width: 620px !important;
+}
+
+.designation-box {
+  width: 300px !important;
+}
+
+.search-btn-box {
+  width: 225px !important;
+  height: 50px;
+
+}
+
+.row.filter.mt-4 {
+  gap: 6px;
+}
+
+button.btn.btn-default.search-btn-box {
+  background: #2373B2;
+  color: white;
+}
+
+input.form-control.search-input {
+  height: 50px;
+}
+
+select.form-control.designation-box {
+  height: 50px;
 }
 
 /* p.fade_info {

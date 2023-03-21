@@ -17,6 +17,7 @@ export default function DataContextProvider({ children }) {
             setToken(token)
         }
         setIsLoading(false)
+        console.log("datacontext")
     }, [])
 
     async function fetchUser() {
