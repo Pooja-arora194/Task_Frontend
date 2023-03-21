@@ -382,6 +382,7 @@ function LayoutTemplate({ children }) {
                                                         <MenuItem value={10}> <Link to="/dashboardpage">Dashboard</Link></MenuItem>
                                                         {user.role == 2 && <MenuItem value={10}> <Link to="/leaves">Leave Quota</Link></MenuItem>}
                                                         <MenuItem value={10}> <Link to="/profile">My Profile</Link></MenuItem>
+                                                        <MenuItem value={10}> <Link to="/adduser">Add Employee</Link></MenuItem>
                                                         <MenuItem value={10}> <Link to="/employee_list">Employee List</Link></MenuItem>
                                                         <MenuItem value={10}> <Link to="/leaverequest">Leave Requests</Link></MenuItem>
                                                         <MenuItem value={20} onClick={logout}>Logout</MenuItem>
