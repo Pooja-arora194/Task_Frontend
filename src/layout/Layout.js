@@ -265,6 +265,45 @@ function LayoutTemplate({ children }) {
                                         <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
                                     </div>
                                 </div>
+
+                                {
+                                    !user.timeLog?.checkInFlag ?
+                                        <>
+                                            <div className="mt-4">
+                                                <button className="Check-In-Btn"
+                                                    onClick={CheckInFun}
+                                                ><span>Check In</span>
+                                                    <img src="./checkInicon.svg"
+                                                        style={{
+                                                            paddingLeft: 10
+                                                        }}
+                                                    />
+                                                </button>
+                                            </div>
+                                        </>
+                                        :
+                                        user.timeLog?.checkInFlag && !user.timeLog?.checkOutFlag ?
+                                            <>YYYY-MM-DD HH:mm:ss
+                                                <p className="mt-2 mb-2 time-log-show">Checked in At : {moment(user.timeLog?.checkIn).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                                <div className="mt-4">
+                                                    <button className="Check-Out-Btn"
+                                                        onClick={CheckInFun}
+                                                    ><span>Check Out</span>
+                                                        <img src="./checkOuticon.svg"
+                                                            style={{
+                                                                paddingLeft: 10
+                                                            }}
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                <p className="mt-2 mb-2 time-log-show">Checked In At : {moment(user.timeLog?.checkIn).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                                <p className="mt-2 mb-2 time-log-show">Checked Out At : {moment(user.timeLog?.checkOut).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                            </>
+                                }
+
                                 <div className='logout_button mt-4'>
                                     {user?.profile == 'team_leader' ?
                                         <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
