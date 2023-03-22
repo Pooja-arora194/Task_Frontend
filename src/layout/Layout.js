@@ -289,7 +289,7 @@ function LayoutTemplate({ children }) {
                                                     <button className="Check-Out-Btn"
                                                         onClick={CheckInFun}
                                                     ><span>Check Out</span>
-                                                        <img src="./checkOuticon.svg"
+                                                        <img src="./checkOutIcon.svg"
                                                             style={{
                                                                 paddingLeft: 10
                                                             }}
