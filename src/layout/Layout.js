@@ -106,7 +106,7 @@ function LayoutTemplate({ children }) {
         return months;
     }
     useEffect(() => {
-        if (Object.keys(user).length > 0) {
+        if (Object.keys(user).length > 0 && user.timeLog) {
             return
         }
         fetchUser()
