@@ -5,7 +5,8 @@
     padding: 4px 25px;
     border-radius: 5px;
 }
-body a{
+
+body a {
     text-decoration: none;
     text-transform: none;
 }
@@ -17,6 +18,23 @@ body a{
     background: #FF2204;
     border: none;
     padding: 4px 20px;
+    border-radius: 5px;
+}
+
+button.Check-In-Btn {
+    background: transparent;
+    color: #fff;
+    border-style: dotted;
+    padding: 9px 51px;
+    border-color: #fff;
+    border-radius: 5px;
+}
+button.Check-Out-Btn {
+    background: #D21C03;
+    color: #fff;
+    border-style: dotted;
+    padding: 9px 46px;
+    border-color: #fff;
     border-radius: 5px;
 }
 
@@ -57,7 +75,8 @@ body a{
     float: right;
 
 }
-.leave-approve-btn{
+
+.leave-approve-btn {
     border: none;
     border-style: dotted;
     color: #2373B2;

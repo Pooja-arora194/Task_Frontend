@@ -13,6 +13,8 @@ import ListItemText from '@mui/material/ListItemText';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Typography from '@mui/material/Typography';
 import moment from 'moment'
 import Avatar from '@mui/material/Avatar';
@@ -33,7 +35,7 @@ const drawerWidth = 300;
 
 function LayoutTemplate({ children }) {
     const location = useLocation();
-    const { fetchUser, setUser, user, fetchAllNotification, notifications, setNotifications } = useContext(DataContext)
+    const { fetchUser, setUser, user, fetchAllNotification, notifications, setNotifications, timeLog } = useContext(DataContext)
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [profile, setProfile] = useState('');
@@ -66,6 +68,20 @@ function LayoutTemplate({ children }) {
         localStorage.removeItem('authtoken');
         navigate('/')
     };
+    const CheckInFun = () => {
+        timeLog()
+            .then((res) => {
+                console.log(res)
+                toast.success("Successfully Checked in")
+                fetchUser()
+            })
+            .catch((e) => {
+                console.log(e)
+                toast.error("Something went wrong")
+            })
+    }
+
+
     const monthDiff = (date_of_joining) => {
 
         const past_date = new Date();
@@ -74,10 +90,17 @@ function LayoutTemplate({ children }) {
         let months;
         // const months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
         if (difference > 12) {
-            months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
-
+            return (
+                months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
+            )
+        } else if (difference < 0) {
+            return (
+                months = 0 + " months"
+            )
         } else {
-            months = difference % 12 + " months"
+            return (
+                months = difference % 12 + " months"
+            )
         }
 
         return months;
@@ -131,14 +154,57 @@ function LayoutTemplate({ children }) {
                                 <p>Phone No </p><p className="fade_info">{user.phonenumber}</p>
                                 <p>Tenure </p><p className="fade_info">{monthDiff(user.date_of_joining)}</p>
                                 <p>Birthday </p><p className="fade_info">{moment(user.dob).format('DD-MMM-YYYY')}</p>
-
-
                             </div>
-
-
-
-
                         </div>
+                        {
+                            !user.timeLog?.checkInFlag ?
+                                <>
+                                    <div className="mt-4">
+                                        <button className="Check-In-Btn"
+                                            onClick={CheckInFun}
+                                        ><span>Check In</span>
+                                            <img src="./checkInicon.svg"
+                                                style={{
+                                                    paddingLeft: 10
+                                                }}
+                                            />
+                                        </button>
+                                    </div>
+                                </>
+                                :
+                                user.timeLog?.checkInFlag && !user.timeLog?.checkOutFlag ?
+                                    <>YYYY-MM-DD HH:mm:ss
+                                        <p className="mt-2 mb-2 time-log-show">Checked in At : {moment(user.timeLog?.checkIn).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                        <div className="mt-4">
+                                            <button className="Check-Out-Btn"
+                                                onClick={CheckInFun}
+                                            ><span>Check Out</span>
+                                                <img src="./checkOuticon.svg"
+                                                    style={{
+                                                        paddingLeft: 10
+                                                    }}
+                                                />
+                                            </button>
+                                        </div>
+                                    </>
+                                    :
+                                    <>
+                                        <p className="mt-2 mb-2 time-log-show">Checked In At : {moment(user.timeLog?.checkIn).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                        <p className="mt-2 mb-2 time-log-show">Checked Out At : {moment(user.timeLog?.checkOut).format('YYYY-MM-DD HH:mm:ss')}</p>
+                                    </>
+                        }
+
+                        {/* <div className="mt-4">
+                            <button className="Check-Out-Btn"
+                                onClick={CheckInFun}
+                            ><span>Check Out</span>
+                                <img src="./checkOuticon.svg"
+                                    style={{
+                                        paddingLeft: 10
+                                    }}
+                                />
+                            </button>
+                        </div> */}
                         <div className='logout_button mt-4'>
                             <Link to='/leaverequest'><button className='leave-request-btn' >Leave Request</button></Link>
 

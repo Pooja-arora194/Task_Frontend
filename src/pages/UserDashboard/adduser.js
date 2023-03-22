@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LayoutTemplate from "../../layout/Layout";
+import moment from 'moment'
 
 const AddUser = () => {
 
@@ -70,7 +71,7 @@ const AddUser = () => {
       .catch(function (error) {
         console.log(error);
       });
-  },[])
+  }, [])
 
   return (
     <LayoutTemplate>
@@ -119,7 +120,9 @@ const AddUser = () => {
             <div className="row justify-content-between custom-row">
               <div className="col-md-3">
                 <label className="addUserLabel">Date Of Joining</label>
-                <input className=" add_userInput" onChange={values} value={newuser.date_of_joining} placeholder="Enter Date Of Joining" type="date" name="date_of_joining" required />
+                <input className=" add_userInput" onChange={values}
+                  min={moment(new Date()).format('YYYY-MM-DD')}
+                  value={newuser.date_of_joining} placeholder="Enter Date Of Joining" type="date" name="date_of_joining" required />
               </div>
               <div className="col-md-3">
                 <label className=" addUserLabel">Designation</label>

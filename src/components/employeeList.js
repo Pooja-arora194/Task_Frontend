@@ -23,6 +23,8 @@ import LayoutTemplate from "../layout/Layout";
 import { ToastContainer, toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import { message, Popconfirm } from 'antd';
+import moment from 'moment'
+
 const tableHead = {
     name: "Name",
     parentId: "Employee Id",
@@ -52,15 +54,13 @@ const EmployeeLists = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userId, setUserId] = useState('');
     const [show, setShow] = useState(false);
+    const [searchByName, setSearchByName] = useState('')
+    const [searchByDesignation, setSearchByDesignation] = useState('')
 
-    const confirm = (e: React.MouseEvent<HTMLElement>) => {
-        console.log(e);
-        message.success('Click on Yes');
-    };
 
-    const cancel = (e: React.MouseEvent<HTMLElement>) => {
+    const cancel = (e) => {
         console.log(e);
-        message.error('Click on No');
+
     };
 
     const showModal = () => {
@@ -87,7 +87,7 @@ const EmployeeLists = () => {
         setName(filtered_data.name)
         setEmail(filtered_data.email)
         setDesignation(filtered_data.designation)
-        // setDob(filtered_data.dob)
+        setDob(filtered_data.dob)
         setPhone(filtered_data.phonenumber)
         setEmpID(filtered_data.emp_id)
 
@@ -128,9 +128,10 @@ const EmployeeLists = () => {
     }));
 
 
-    const countPerPage = 100;
+    const countPerPage = 10;
     const [value, setValue] = React.useState("");
     const [currentPage, setCurrentPage] = React.useState(1);
+
     const [collection, setCollection] = React.useState(
         cloneDeep(employeelist.slice(0, countPerPage))
     );
@@ -194,8 +195,9 @@ const EmployeeLists = () => {
         ));
     };
 
-    const remove_emp = (e, id) => {
-        e.preventDefault();
+    const confirm = (e) => {
+        console.log(e);
+
         let authtokens = localStorage.getItem("authtoken");
         let token = {
             headers: {
@@ -205,8 +207,7 @@ const EmployeeLists = () => {
             },
         };
 
-        console.log(id, "asd")
-        axios.put(`${BASE_URL}/employee_remove/${id}`, {}, token)
+        axios.put(`${BASE_URL}/employee_remove/${userId}`, {}, token)
             .then((res) => {
                 console.log(res.data, "employee_list")
                 EmployeeList()
@@ -214,7 +215,9 @@ const EmployeeLists = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }
+
+        message.success('Successfully Deleted');
+    };
     const update_profile = async (req, res) => {
 
 
@@ -257,7 +260,32 @@ const EmployeeLists = () => {
 
     }
 
-    console.log(fillname, "fillname")
+    const filter_records = () => {
+        if (searchByName != '') {
+
+            let tmp = [...collection]
+            const result = tmp.filter(value => value.name.toLowerCase().includes(searchByName.toLowerCase()))
+            setCollection(result)
+            setSearchByName('')
+
+        }
+        if (searchByDesignation != '') {
+            let tmp = [...collection]
+            const result = tmp.filter(value => value.designation.toLowerCase().includes(searchByDesignation.toLowerCase()))
+            setCollection(result)
+            setSearchByDesignation('')
+
+        }
+        if (searchByDesignation != '' && searchByName != '') {
+            let tmp = [...collection]
+            const result = tmp.filter(value => value.name.toLowerCase().includes(searchByName.toLowerCase()))
+            result.filter(value => value.designation.toLowerCase().includes(searchByDesignation.toLowerCase()))
+            setCollection(result)
+
+
+            console.log(result, "setallresult")
+        }
+    }
 
 
     return (
@@ -270,11 +298,13 @@ const EmployeeLists = () => {
 
                         <div className="search-box col-md-5">
 
-                            <input type="text" name="search" className="form-control search-input" placeholder="Search By Name" />
+                            <input type="text" name="search" className="form-control search-input" placeholder="Search By Name"
+                                onChange={(e) => { setSearchByName(e.target.value) }} value={searchByName} />
 
                         </div>
                         <div className="designation-box col-md-3">
                             <select className="form-control designation-box" name="designation"
+                                onChange={(e) => { setSearchByDesignation(e.target.value) }} value={searchByDesignation}
                             >
                                 <option selected>Select Designation</option>
                                 <option value="Full Stack Developer">Full Stack Developer</option>
@@ -288,7 +318,7 @@ const EmployeeLists = () => {
                             </select>
                         </div>
                         <div className="search-btn-box col-md-3">
-                            <button className="btn btn-default search-btn-box">Search</button>
+                            <button className="btn btn-default search-btn-box" onClick={filter_records}>Search</button>
                         </div>
                     </div>
 
@@ -297,130 +327,135 @@ const EmployeeLists = () => {
                             <thead>
                                 <tr>{headRow()}</tr>
                             </thead>
-                            <tbody>
-                                {
-                                    collection?.map((item, i) => {
-                                        return (
-                                            <>
-                                                <tr
-                                                >
-                                                    <td>{item?.name}</td>
-                                                    <td>{item?.emp_id}</td>
-                                                    <td>{item?.email}</td>
-                                                    <td>{item?.phonenumber}</td>
-                                                    <td>{item?.designation}</td>
+                            {collection.length > 0 ?
+                                <tbody>
+                                    {
+                                        collection?.map((item, i) => {
+                                            return (
+                                                <>
+                                                    <tr
+                                                    >
+                                                        <td>{item?.name}</td>
+                                                        <td>{item?.emp_id}</td>
+                                                        <td>{item?.email}</td>
+                                                        <td>{item?.phonenumber}</td>
+                                                        <td>{item?.designation}</td>
 
-                                                    <td> <Dropdown
-                                                        overlay={(
-                                                            <Menu>
-                                                                <Menu.Item key="0" onClick={showModal}>
-                                                                    <EditOutlinedIcon />
-                                                                    Edit
+                                                        <td> <Dropdown
+                                                            overlay={(
+                                                                <Menu>
+                                                                    <Menu.Item key="0" onClick={showModal}>
+                                                                        <EditOutlinedIcon />
+                                                                        Edit
 
-                                                                </Menu.Item>
-                                                                <Menu.Item key="1" >
-                                                                    <Popconfirm
-                                                                        title="Delete the record"
-                                                                        description="Are you sure to delete this record?"
-                                                                        onConfirm={confirm}
-                                                                        onCancel={cancel}
-                                                                        okText="Yes"
-                                                                        cancelText="No"
-                                                                    >
-                                                                        <DeleteOutlineIcon />Delete
-                                                                    </Popconfirm>
-                                                                </Menu.Item>
-                                                            </Menu>
-                                                        )}
-                                                        trigger={['click']}>
-                                                        <a className="ant-dropdown-link"
-                                                            onClick={e => e.preventDefault()}>
-                                                            <MoreVertIcon onClick={(e) => { checkId(item._id) }} />
+                                                                    </Menu.Item>
+                                                                    <Menu.Item key="1" >
 
-                                                        </a>
-                                                    </Dropdown>
-                                                    </td>
-                                                    <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                                                                        <Popconfirm
+                                                                            title="Delete the record"
+                                                                            description="Are you sure to delete this record?"
+                                                                            onConfirm={confirm}
+                                                                            onCancel={cancel}
+                                                                            okText="Yes"
+                                                                            cancelText="No"
+                                                                        >
+                                                                            <DeleteOutlineIcon />Delete
+                                                                        </Popconfirm>
+                                                                    </Menu.Item>
+                                                                </Menu>
+                                                            )}
+                                                            trigger={['click']}>
+                                                            <a className="ant-dropdown-link"
+                                                                onClick={e => e.preventDefault()}>
+                                                                <MoreVertIcon onClick={(e) => { checkId(item._id) }} />
 
-                                                        footer={[
-                                                            <button className="Save_changes btn btn-primary" value="submit" onClick={update_profile} >Save Changes
-
-                                                            </button>
-                                                        ]} >
-
-
-                                                        <Modal
-                                                            open={open}
-                                                            title="Image"
+                                                            </a>
+                                                        </Dropdown>
+                                                        </td>
+                                                        <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
 
                                                             footer={[
+                                                                <button className="Save_changes btn btn-primary" value="submit" onClick={update_profile} >Save Changes
 
-                                                                <Button key="submit" type="primary"  >
-                                                                    Submit
-                                                                </Button>,
+                                                                </button>
+                                                            ]} >
 
-                                                            ]}
-                                                        >
-                                                            <input type="file" name="image"
-                                                            />
+
+                                                            <Modal
+                                                                open={open}
+                                                                title="Image"
+
+                                                                footer={[
+
+                                                                    <Button key="submit" type="primary"  >
+                                                                        Submit
+                                                                    </Button>,
+
+                                                                ]}
+                                                            >
+                                                                <input type="file" name="image"
+                                                                />
+
+                                                            </Modal>
+                                                            <div className="row mt-4" >
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Name</label><br />
+                                                                    <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={fillname} />
+
+
+                                                                </div>
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Employee ID</label><br />
+                                                                    <input type="text" name="employeeid" onChange={(e) => setEmpID(e.target.value)} value={fillempID} />
+
+
+                                                                </div>
+
+
+                                                            </div>
+                                                            <div className="row mt-4" >
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Email</label><br />
+                                                                    <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={fillemail} />
+
+
+                                                                </div>
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Phonenumber</label><br />
+                                                                    <input type="text" name="phonenumber" onChange={(e) => setPhone(e.target.value)} value={fillphone} />
+
+
+                                                                </div>
+
+
+                                                            </div>
+                                                            <div className="row mt-4" >
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Position</label><br />
+                                                                    <input type="text" name="position" onChange={(e) => setDesignation(e.target.value)} value={filldesignation} />
+
+
+                                                                </div>
+                                                                <div className="col-md-6 border_div">
+                                                                    <label className="addUserLabel">Birthday</label><br />
+                                                                    {/* <input type="date" name="birthday" value={new Date(filldob)?.toISOString()?.split('T')[0]} onChange={(e) => setDob(e.target.value)} /> */}
+                                                                    <input type="date" name="dob" value={new Date(filldob)?.toISOString()?.split('T')[0]} onChange={(e) => setDob(e.target.value)} />
+
+
+                                                                </div>
+
+
+                                                            </div>
 
                                                         </Modal>
-                                                        <div className="row mt-4" >
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Name</label><br />
-                                                                <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={fillname} />
-
-
-                                                            </div>
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Employee ID</label><br />
-                                                                <input type="text" name="employeeid" onChange={(e) => setEmpID(e.target.value)} value={fillempID} />
-
-
-                                                            </div>
-
-
-                                                        </div>
-                                                        <div className="row mt-4" >
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Email</label><br />
-                                                                <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={fillemail} />
-
-
-                                                            </div>
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Phonenumber</label><br />
-                                                                <input type="text" name="phonenumber" onChange={(e) => setPhone(e.target.value)} value={fillphone} />
-
-
-                                                            </div>
-
-
-                                                        </div>
-                                                        <div className="row mt-4" >
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Position</label><br />
-                                                                <input type="text" name="position" onChange={(e) => setDesignation(e.target.value)} value={filldesignation} />
-
-
-                                                            </div>
-                                                            <div className="col-md-6 border_div">
-                                                                <label className="addUserLabel">Birthday</label><br />
-                                                                <input type="text" name="birthday" value={new Date(filldob)?.toISOString()?.split('T')[0]} onChange={(e) => setDob(e.target.value)} />
-
-
-                                                            </div>
-
-
-                                                        </div>
-
-                                                    </Modal>
-                                                </tr>
-                                            </>
-                                        )
-                                    })
-                                }
-                            </tbody>
+                                                    </tr>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                                : <div className="col-12">No Records Found</div>
+                            }
                         </table>
                     </div>
                     <Pagination

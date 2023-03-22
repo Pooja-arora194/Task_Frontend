@@ -7,7 +7,10 @@
 .cursur-disabled {
     cursor: not-allowed;
 }
-::-webkit-scrollbar { display: none; }
+
+::-webkit-scrollbar {
+    display: none;
+}
 
 .pending-text {
     text-transform: capitalize;
@@ -260,8 +263,13 @@
     font-size: 16px;
     line-height: 19px;
 }
-.status-rejected{
-    
+
+.status-rejected {}
+
+.time-log-show {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 @media screen and (max-width:755px) {

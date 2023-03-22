@@ -310,6 +310,7 @@ fieldset.MuiOutlinedInput-notchedOutline {
   background-color: #000C16;
   height: 100vh;
   overflow: hidden;
+  overflow-y: auto;
 }
 
 .sidebar .MuiCardContent-root {

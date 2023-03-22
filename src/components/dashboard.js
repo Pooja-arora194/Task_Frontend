@@ -72,6 +72,7 @@ function Dashboard(props) {
     const navigate = useNavigate();
     const { window } = props;
 
+    const hiddenFileInput = React.useRef(null);
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
 
@@ -128,6 +129,13 @@ function Dashboard(props) {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+    const handleClick = event => {
+        hiddenFileInput.current.click();
+    };
+    const handleChange = event => {
+        const fileUploaded = event.target.files[0];
+        setImageVal(fileUploaded)
+    };
 
 
 
@@ -177,22 +185,19 @@ function Dashboard(props) {
     }
 
     const nameHandleOk = () => {
-        if (!addtitle || !addpost) {
-            toast.error('Please Input Title And Post')
+        if (!addpost) {
+            toast.error('Please Input Post')
             return
         }
         const formData = new FormData();
-        formData.append("title", addtitle);
-        formData.append("description", addpost);
         formData.append("image", imageval);
+        formData.append("description", addpost);
+        let authtokens = localStorage.getItem("authtoken");
+        let headers = {
+            token: authtokens
+        }
 
-        const config = {
-            header: {
-                "Content-Type": "application/json",
-            },
-        };
-
-        axios.post(`${BASE_URL}/add_post`, formData, config)
+        axios.post(`${BASE_URL}/add_post`, formData, {headers})
             .then((res) => {
 
                 setAddPost(res.data)
@@ -236,17 +241,16 @@ function Dashboard(props) {
 
     const editHandleOk = () => {
 
-        const title = edittitle;
-        const description = editdescription;
-        const image = updateimage;
 
         const formData = new FormData();
 
         formData.append("image", updateimage);
-        formData.append("title", edittitle);
         formData.append("description", editdescription);
-
-        console.log(title, description, image, "ssssssssssssss")
+        let authtokens = localStorage.getItem("authtoken");
+        let headers = {
+            token: authtokens,
+            "Content-Type": "application/json",
+        }
 
         axios.put(`${BASE_URL}/edit_post/${updateId}`, formData)
             .then((res) => {
@@ -274,6 +278,7 @@ function Dashboard(props) {
             .then((res) => {
                 const filter_data = allpost.filter((val) => val.x._id != id)
                 setAllPost(filter_data)
+                setReloadApi(!reloadApi)
             })
             .catch((err) => {
                 console.log(err);
@@ -485,23 +490,29 @@ function Dashboard(props) {
 
 
                                         <CardContent>
-                                            <textarea placeholder="Type Something Here" style={{ width: "100%", border: "none", padding: 10 }} rows="4" />
+                                            <textarea placeholder="Type Something Here" style={{ width: "100%", border: "none", padding: 10 }} rows="4" value={addpost} name="description" onChange={(e) => setAddPost(e.target.value)} />
                                         </CardContent>
                                         <CardContent>
                                             <div className="row">
                                                 <div className="col-6">
                                                     <div className="row">
-                                                        <div className="col-6">
+                                                        {/* <div className="col-6">
                                                             <img src="./attach-image.svg" style={{ paddingRight: 5 }} /> Attach Document
+                                                        </div> */}
+                                                        <div className="col-6" onClick={handleClick}>
+                                                            <img src="./attach-image1.svg" style={{ paddingRight: 5 }} />Attach Image
+                                                            <input
+                                                                type="file"
+                                                                ref={hiddenFileInput}
+                                                                onChange={handleChange}
+                                                                style={{ display: 'none' }} />
                                                         </div>
-                                                        <div className="col-6">
-                                                            <img src="./attach-image1.svg" style={{ paddingRight: 5 }} />Attach Image</div>
                                                     </div>
                                                 </div>
                                                 <div className="col-6">
                                                     <div className="row">
                                                         <div className="col-12">
-                                                            <button className="newpost_btn">Post</button>
+                                                            <button className="newpost_btn" onClick={nameHandleOk}>Post</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -548,7 +559,7 @@ function Dashboard(props) {
 
                                     <Modal
                                         open={openedit}
-                                        title="Add Post"
+                                        title="Edit Post"
                                         onOk={editHandleOk}
                                         onCancel={editHandleCancel}
 
@@ -560,11 +571,8 @@ function Dashboard(props) {
 
                                         ]}
                                     >
-                                        <label> Edit Ttile</label>
-                                        <input type="text" className="form-control" name="title" value={edittitle}
-                                            onChange={(e) => handleTitle(e)}
-                                        />
-                                        <label> Edit Description</label>
+
+                                        <label> Edit Post</label>
                                         <textarea className="form-control" name="description" value={editdescription}
                                             onChange={(e) => handleDescription(e)}
                                         ></textarea>
@@ -579,10 +587,10 @@ function Dashboard(props) {
                             allpost.map((element, index) => {
                                 return (
 
-                                    <Card key={index} sx={{ maxWidth: 1100, boxShadow: "none", borderRadius: 0 }} className="post">
+                                    <Card key={index} sx={{ maxWidth: 1100, boxShadow: "none", borderRadius: 0 }} className="post mb-4">
                                         <CardHeader
                                             avatar={
-                                                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" alt={profileval.name} src={BASE_URL + "/" + profileval.image} >
+                                                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" alt={element.x?.posted_by?.name} src={BASE_URL + "/" + element.x?.posted_by?.image} >
                                                 </Avatar>
                                             }
                                             action={
@@ -593,7 +601,7 @@ function Dashboard(props) {
                                                 </Dropdown>
 
                                             } className="post_style"
-                                            title={element.x.title}
+                                            title={element.x?.posted_by?.name}
                                             subheader={moment(element.x.post_date).format('MMM DD, YYYY')}
                                         />
 

@@ -17,8 +17,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoaderContext } from "../App";
 import LayoutTemplate from "../layout/Layout";
+import { DataContext } from "../context/DataContext";
 
 const Setting = () => {
+  const {fetchUser}=useContext(DataContext)
   const { showLoader, hideLoader } = useContext(LoaderContext)
 
 
@@ -217,6 +219,7 @@ const Setting = () => {
         setPassword(res.data.password)
         setDob(res.data.dob)
         setPhone(res.data.phonenumber)
+        fetchUser()
         navigate('/profile')
       })
       .catch((err) => {

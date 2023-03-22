@@ -23,13 +23,20 @@ export default function DataContextProvider({ children }) {
     async function fetchUser() {
         return new Promise((resolve, reject) => {
             let authtokens = localStorage.getItem("authtoken")
-            let token = {
+            // let token = {
+            //     headers: {
+            //         token: authtokens,
+            //         "Content-Type": "application/json",
+            //     },
+            // };
+            var config = {
+                method: 'get',
+                url: BASE_URL + `/getUserdata`,
                 headers: {
-                    token: authtokens,
-                    "Content-Type": "application/json",
-                },
+                    'token': authtokens
+                }
             };
-            axios.get(`${BASE_URL}/profile`, token)
+            axios(config)
                 .then((res) => {
                     setuser(res.data)
                     resolve(res.data)
@@ -66,10 +73,29 @@ export default function DataContextProvider({ children }) {
                 });
         })
     }
+    const timeLog = async() => {
+        let authtokens = localStorage.getItem("authtoken");
+
+        var config = {
+            method: 'post',
+            url: 'http://localhost:8000/checkin',
+            headers: {
+                'token': authtokens
+            },
+        };
+
+        return axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <DataContext.Provider value={{
-            user, setuser, notifications, setNotifications, token, setToken, fetchUser, fetchAllNotification
+            user, setuser, notifications, setNotifications, token, setToken, fetchUser, fetchAllNotification,timeLog
         }}>
             {!isLoading && children}
         </DataContext.Provider>

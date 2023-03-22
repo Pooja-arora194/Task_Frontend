@@ -100,10 +100,17 @@ function Profile() {
         let months;
         // const months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
         if (difference > 12) {
-            months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
-
+            return (
+                months = (difference / 12 | 0) + " years and " + difference % 12 + " months"
+            )
+        } else if (difference < 0) {
+            return (
+                months = 0 + " months"
+            )
         } else {
-            months = difference % 12 + " months"
+            return (
+                months = difference % 12 + " months"
+            )
         }
 
         return months;
