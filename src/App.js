@@ -1,55 +1,85 @@
-
 import './App.css';
+import './btn.css'
+import './custom.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from "./Component/login";
-import Signup from './Component/signUp';
-import Dashboardpage from './pages/UserDashboard/dashboard';
-import Dashboards from './pages/HR/Dashboard';
-import Setting from './Component/setting';
+import Login from './components/login';
+import Dashboard from './components/dashboard';
+import Setting from './components/setting';
+
 import ApplyLeave from './pages/UserDashboard/applyLeave';
+import Profile from './pages/UserDashboard/profile';
 import Leaves from './pages/UserDashboard/leaves';
 import AddUser from './pages/UserDashboard/adduser';
-import Profile from './pages/UserDashboard/profile';
-import LeaveStatus from './pages/UserDashboard/leaveStatus';
 import LeaveRequest from './pages/HR/leaveRequest';
+import Comment from './pages/utils/comment';
 import Event from './pages/HR/Event';
-import Imageupload from './pages/HR/imageupload';
 import Invite from './pages/HR/invite';
-import LeaveRequests from './pages/admin/leaverequest';
 import AddProjectPage from './pages/HR/addproject';
 import AddTeamPage from './pages/HR/addteam';
+import Loader from './loader/loader';
+// import EmployeeList from './pages/HR/employeeList';
+import { createContext, useState } from "react";
+import DataContext from './context/DataContext';
+import Layout from './layout/Layout';
+import Unauthorized from './pages/Unauthorized';
+import PageNotFound from './pages/PageNotFound';
+import EmployeeList from './components/employeeList';
+
+export const LoaderContext = createContext(null);
+
 function App() {
+  const [loading, setLoading] = useState(false);
+
+  const showLoader = () => {
+    setLoading(true)
+  }
+  const hideLoader = () => {
+    setLoading(false)
+  }
+  if (loading) {
+    document.body.classList.toggle('overflowhidden', loading);
+  }
+  else {
+    document.body.classList.remove('overflowhidden', loading);
+  }
 
   return (
+
     <div className="App">
-      <BrowserRouter>
-        <div className='App'>
-          <div>
+      <DataContext>
+        <LoaderContext.Provider value={{ showLoader, hideLoader }}>
+          <Loader value={loading} />
+          
+          <BrowserRouter>
+            <div className='App'>
+                <Routes>
+                  <Route exact  path="/" element={<Login />} />
+                  <Route exact  path="/dashboardpage" element={<Dashboard />} />
+                  {/* <Route path="/dashboard" element={<Dashboardpage />} /> */}
+                  {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+                  <Route exact  path="/setting" element={<Setting />} />
+                  <Route exact  path="/applyleave" element={<ApplyLeave />} />
+                  <Route exact  path="/profile" element={<Profile />} />
+                  <Route exact  path="/leaves" element={<Leaves />} />
+                  <Route exact  path="/adduser" element={<AddUser />} />
+                  <Route exact  path="/leaverequest" element={<LeaveRequest />} />
+                  {/* <Route path="/comments" element={<Comment />} /> */}
+                  {/* <Route path="/event" element={<Event />} /> */}
+                  <Route exact  path="/invite" element={<Invite />} />
+                  <Route exact  path="/401" element={<Unauthorized />} />
+                  {/* <Route path="/addproject" element={<AddProjectPage />} /> */}
+                  {/* <Route path="/project/:code" element={<AddTeamPage />} /> */}
+                  {/* <Route path="/Admin_leave_request" element={<LeaveRequests />} /> */}
+                  {/* <Route path="/layout" element={<Layout />} /> */}
 
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              {/* <Route path="/" element={<Signup />} /> */}
-              <Route path="dashboardpage" element={<Dashboards />} />
-              <Route path="/dashboard" element={<Dashboardpage />} />
-              <Route path="/setting" element={<Setting />} />
-              <Route path="/leaves" element={<Leaves />} />
-              <Route path="/applyleave" element={<ApplyLeave />} />
-              <Route path="/adduser" element={<AddUser />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/leavestatus" element={<LeaveStatus />} />
-              <Route path="/leaverequest" element={<LeaveRequest />} />
-              <Route path="/event" element={<Event />} />
-              <Route path="/image" element={<Imageupload />} />
-              <Route path="/invite" element={<Invite />} />
-              <Route path="/addproject" element={<AddProjectPage />} />
-              <Route path="/project/:code" element={<AddTeamPage />} />
-              <Route path="/Admin_leave_request" element={<LeaveRequests />} />
-            </Routes>
-          </div>
-        </div>
-      </BrowserRouter>
-
-    </div>
+                  <Route path="/employee_list" element={<EmployeeList />} />
+                  <Route  path="*" component={<PageNotFound />} />
+                </Routes>
+            </div>
+          </BrowserRouter>
+        </LoaderContext.Provider>
+      </DataContext>
+    </div >
   );
 }
 

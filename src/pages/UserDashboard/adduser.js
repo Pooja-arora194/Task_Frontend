@@ -1,189 +1,189 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Header from "../utils/header";
+import { BASE_URL } from "../../baseUrl";
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from "react-router-dom";
-import Header from "../utils/header";
-const drawerWidth = 320;
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LayoutTemplate from "../../layout/Layout";
+import moment from 'moment'
+
 const AddUser = () => {
 
-   const navigate = useNavigate();
-    const [newuser, setNewUser] = useState({
-      name: "",
-      first_login: "",
-      email: "",
-       dob: "",
-       phonenumber: "",
-       date_of_joining: "",
-       emp_id: "",
-       designation: ""
+  const navigate = useNavigate();
+  const [role, setRole] = useState('')
+  const [show, setShow] = useState(false)
+  const [teamLeads, setTeamLeads] = useState([])
+  const [newuser, setNewUser] = useState({
+    name: "",
+    first_login: "",
+    email: "",
+    dob: "",
+    phonenumber: "",
+    date_of_joining: "",
+    emp_id: "",
+    designation: "",
+    otherDesignation: '',
+    profile: '',
+    team_leader: ''
+  },
+  )
 
-    },
+  const values = (e) => {
+    setNewUser({ ...newuser, [e.target.name]: e.target.value });
+  }
 
-    )
-    const [role, setRole] = useState('')
-    const [show, setShow] = useState(false)
-    
+  const add = (e) => {
+    e.preventDefault()
+    const { name, email, first_login, dob, phonenumber, date_of_joining, emp_id, designation } = newuser;
+    console.log(newuser)
 
-
-    useEffect(()=> {
-
-      let authtokens = localStorage.getItem("authtoken");
-      if(!authtokens){
-          navigate('/login')
-        }
-        else{
-        let display = {
-          headers: {
-              'token': authtokens, 
-          }
-        }
-      
-
-      axios.get(`http://localhost:8000/all`, display )
+    axios
+      .post(`${BASE_URL}/add_user`, newuser)
       .then((res) => {
-     
-        setRole(res.data.role)
-        if(res.data.role == 2 || res.data.role == 1){
-            setShow(true)
-        }
-        else{
-          navigate('/dashboard')
-        }
+        setNewUser(res.data)
+        console.log(res.data)
+        toast.success("User Added Successfully")
+        navigate('/invite')
+        setNewUser({ name: "", email: "", first_login: "", emp_id: "", phonenumber: "", dob: "", date_of_joining: "", designation: "" })
       })
       .catch((err) => {
-          console.log(err);
-          
-        });
-      };
-        
+        toast.error(err.response?.data?.msg ?? "Something went wrong")
+        console.log(err);
+
+      });
+  }
+
+  useEffect(() => {
+    var config = {
+      method: 'get',
+      url: `${BASE_URL}/get/team_leaders`,
+      headers: {}
+    };
+
+    axios(config)
+      .then(function (response) {
+        setTeamLeads(response.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, [])
-    useEffect(() => {
-   
-      let authtokens = localStorage.getItem("authtoken");
-      let token = {
-          headers: {
-              token: authtokens,
-          },
-      };
-
-      if(!authtokens){
-          navigate('/login')
-      }
-    }, [])
-    
-
-    const handlesubmit = async (e) => {  
-        e.preventDefault();
-      };
-
-
-      const values = (e) => {
-   
-        setNewUser({...newuser, [e.target.name]: e.target.value });
-       
-      }
-   
-      const add = () => {
-
-        const { name, email, first_login,dob,phonenumber, date_of_joining,emp_id, designation } = newuser;
-
-        console.log(first_login, "first_login")
-      
-        axios
-        .post(`http://localhost:8000/add_user`, newuser)
-        .then((res) => {
-          console.log(res.data);
-          setNewUser(res.data)
-          navigate('/invite')
-          // localStorage.setItem('authtoken',res.data.authtoken);
-          
-         
-        })
-        .catch((err) => {
-          console.log(err);
-     
-        });
-        setNewUser({name: "", email: "", first_login: "" , emp_id: "", phonenumber: "", dob: "", date_of_joining: "",designation: ""})
-      }
-
 
   return (
-    <>
-   
+    <LayoutTemplate>
+      <ToastContainer></ToastContainer>
+      <div className=" layout add-UserLayout">
+        <div className="container">
+          <h2 className="add-user-heading">Add Employee</h2>
 
-
-<Header />
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(95% - ${drawerWidth}px)` } }}
-      >
-        <Toolbar />
-        <Typography paragraph>
-
-          <div className=" layout add-UserLayout">
-            <div className="container">
-              <h2 className="add-user-heading"><b>Add Employee</b></h2>
-
-
-              <div className="row justify-content-between custom-row">
-                <div className="col-md-4">
-                  <label className="addUserLabel">Employee Name</label><br/>
-                  <input type="text" name="name"  value={newuser.name} onChange={values} className="form-control add_userInput" placeholder="Enter Employee Name" />
-                </div>
-                <div className="col-md-4">
-                  <label className="addUserLabel">Email Id</label><br/>
-                  <input   type="email" name="email"  value={newuser.email} onChange={values}  className=" form-control add_userInput" placeholder="Enter Email Id" />
-                </div>
-                <div className="col-md-4">
-                  <label className="addUserLabel">Password</label><br/>
-                  <input type="text" name="first_login" value={newuser.first_login} onChange={values}  className=" form-control add_userInput" placeholder="Enter Password" />
-                </div>
+          <form onSubmit={add}>
+            <div className="row justify-content-between custom-row">
+              <div className="col-md-3">
+                <label className="addUserLabel">Employee Name</label>
+                <input type="text" className=" add_userInput" onChange={values} name="name"
+                  value={newuser.name} placeholder="Enter Employee Name" required />
               </div>
-              <div className="row justify-content-between custom-row">
-                <div className="col-md-4">
-                  <label className="addUserLabel">Date Of Birth</label><br/>
-                  <input className="form-control add_userInput"  value={newuser.dob} onChange={values} placeholder="Enter Date Of Birth" type="date" name="dob" />
-                </div>
-                <div className="col-md-4">
-                  <label className="addUserLabel">Phone No</label><br/>
-                  <input  type="number"   onChange={values}  value={newuser.phonenumber} name="phonenumber" className=" form-control add_userInput" placeholder="Enter Phone No" />
-                </div>
-                <div className="col-md-4">
-                  <label className="addUserLabel">Employee ID</label><br/>
-                  <input type="string" name="emp_id"  value={newuser.emp_id}  onChange={values} className=" form-control add_userInput" placeholder="Enter Employee ID" />
-                </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Email Id</label>
+                <input className=" add_userInput" onChange={values}
+                  value={newuser.email} placeholder="Enter Email Id" type="email" name=
+                  "email" required />
               </div>
-              <div className="row  custom-row">
-                <div className="col-md-4">
-                  <label className="addUserLabel">Date Of Joining</label><br/>
-                  <input  type="date"  name="date_of_joining"  value={newuser.date_of_joining} onChange={values} className="form-control add_userInput" placeholder="Enter Date Of Joining" />
-                </div>
-                <div className="col-md-4">
-                  <label className="addUserLabel">Designation</label><br/>
-                  <select className="form-control add_userInput"  value={newuser.designation} onChange={values} name="designation">
-                  
-                        <option selected>Select Designation</option>
-                        <option value="Full Stack Developer">Full Stack Developer</option>
-                        <option value="Php Developer">Php Developer</option>
-                        <option value="Designer">Designer</option>
-                        <option value="SEO">SEO</option>
-                        <option value="BDE">BDE</option>
-                        <option value="HR">HR</option>
-                     
-                    </select>
-                </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Password</label>
+                <input className=" add_userInput" onChange={values}
+                  value={newuser.first_login} placeholder="Enter Password" type="string" name="first_login" required />
               </div>
-              <input type="submit" className="add-employee-btn" value="Add Employee" onClick={add}/>
             </div>
+            <div className="row justify-content-between custom-row">
+              <div className="col-md-3">
+                <label className="addUserLabel">Date Of Birth</label>
+                <input className=" add_userInput" onChange={values}
+                  value={newuser.dob} type="date" placeholder="Enter Date Of Birth" name="dob" required />
+              </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Phone No</label>
+                <input className=" add_userInput" onChange={values}
+                  value={newuser.phonenumber} placeholder="Enter Phone No" type="number" name="phonenumber" required maxLength={10} minLength={9} />
+              </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Employee ID</label>
+                <input className=" add_userInput" onChange={values}
+                  value={newuser.emp_id}
+                  placeholder="Enter Employee ID" type="string" name="emp_id" required />
+              </div>
+            </div>
+            <div className="row justify-content-between custom-row">
+              <div className="col-md-3">
+                <label className="addUserLabel">Date Of Joining</label>
+                <input className=" add_userInput" onChange={values}
+                  min={moment(new Date()).format('YYYY-MM-DD')}
+                  value={newuser.date_of_joining} placeholder="Enter Date Of Joining" type="date" name="date_of_joining" required />
+              </div>
+              <div className="col-md-3">
+                <label className=" addUserLabel">Designation</label>
+                <select className="add_userInput" name="designation" onChange={values}
+                  value={newuser.designation} required>
+                  <option selected>Select Designation</option>
+                  <option value="Full Stack Developer">Full Stack Developer</option>
+                  <option value="Php Developer">Php Developer</option>
+                  <option value="Designer">Designer</option>
+                  <option value="SEO">SEO</option>
+                  <option value="BDE">BDE</option>
+                  <option value="HR">HR</option>
+                  <option value="other">Other</option>
 
-          </div>
-        </Typography>
-      </Box >
+                </select>
+                {newuser?.designation == "other"
+                  &&
+                  <>
+                    <label className=" addUserLabel">Designation</label>
+                    <input className="add_userInput" name='otherDesignation' onChange={values} value={newuser.otherDesignation} placeholder="Enter Designation" type="text" />
+                  </>
+                }
+              </div>
+              <div className="col-md-3">
+                <label className="addUserLabel">Profile</label>
+                <select className="add_userInput" name="profile" onChange={values}
+                  value={newuser.profile} required>
+                  <option selected>Select Designation</option>
+                  <option value="team_leader">Team Leader</option>
+                  <option value="employee">Employee</option>
+                </select>
+                {newuser?.profile == "employee"
+                  &&
+                  <>
+                    <label className="addUserLabel">Team Leader</label>
+                    <select className="add_userInput" name="team_leader" onChange={values}
+                      value={newuser.team_leader} required>
+                      {teamLeads?.length > 0 ?
+                        <>
+                          <option selected>Select Team Leader</option>
+                          {teamLeads.map((item, index) => {
+                            return <option kye={index} value={item._id}>
+                              {item.name}
+                            </option>
+                          })}
+                        </>
+                        :
+                        <option disabled >No Team Leader</option>
+                      }
 
-  </>
-    
+                    </select>
+                  </>
+                }
+              </div>
+            </div>
+            <input type="submit" className="add-employee-btn" value="Add Employee" />
+          </form>
+        </div>
+
+      </div>
+    </LayoutTemplate>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,13 +8,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router-dom";
 import Header from "../utils/header";
-import CheckIcon from '@mui/icons-material/Check'; 
-
+import { BASE_URL } from "../../baseUrl";
+import CheckIcon from '@mui/icons-material/Check';
+import { LoaderContext } from '../../App.js'
+import LayoutTemplate from "../../layout/Layout";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 0;
 
-const drawerWidth = 320;
 const MenuProps = {
     PaperProps: {
         style: {
@@ -27,146 +28,130 @@ const MenuProps = {
 
 
 function Invite() {
-
+    const { showLoader, hideLoader } = useContext(LoaderContext)
     const navigate = useNavigate();
     const [request, setRequest] = useState([]);
- 
+
     const [role, setRole] = useState('')
     const [show, setShow] = useState(false)
-    
 
 
-    useEffect(()=> {
-
-        let authtokens = localStorage.getItem("authtoken");
-        if(!authtokens){
-            navigate('/login')
-          }
-          else{
-          let display = {
-            headers: {
-                'token': authtokens, 
-            }
-          }
-        
-
-        axios.get(`http://localhost:8000/all`, display )
-        .then((res) => {
-           
-          setRole(res.data.role)
-          if(res.data.role == 2 || res.data.role == 1){
-              setShow(true)
-          }
-          else{
-            navigate('/dashboard')
-          }
-        })
-        .catch((err) => {
-            console.log(err);
-            
-          });
-        };
-          
-    }, [])
 
     useEffect(() => {
 
-        axios.get(`http://localhost:8000/all_add_employee`)
-        .then((res) => {
-            setRequest(res.data)
-            console.log(res.data, "checkresposne")
-          
-          
-        })     
-        .catch((err) => {
-            console.log(err);
-                   
-        });
+        let authtokens = localStorage.getItem("authtoken");
+        if (!authtokens) {
+            navigate('/')
+        }
+        else {
+            let display = {
+                headers: {
+                    'token': authtokens,
+                }
+            }
 
-        
-      
+
+            axios.get(`${BASE_URL}/all`, display)
+                .then((res) => {
+
+                    setRole(res.data.role)
+                    if (res.data.role == 2 || res.data.role == 1) {
+                        setShow(true)
+                    }
+                    else {
+                        navigate('/')
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+
+                })
+
+        };
 
     }, [])
 
-    const invite = (e,id) => {
-        e.preventDefault();
-        console.log(id, "checkid")
-        axios.post(`http://localhost:8000/invite`, {_id: id})
-        .then((res) => {
-          
-            toast.success('Invite Sent Successfully')
-         
 
-            console.log(res.data,"check1")
-         
-        })     
-        .catch((err) => {
-            console.log(err);
-                   
-        });
+
+    useEffect(() => {
+        showLoader()
+        axios.get(`${BASE_URL}/all_add_employee`)
+            .then((res) => {
+                setRequest(res.data)
+            })
+            .catch((err) => {
+                console.log(err);
+
+            }).finally(() => {
+
+                hideLoader()
+            })
+
+
+    }, [])
+
+    const invite = (e, id) => {
+        e.preventDefault();
+        axios.post(`${BASE_URL}/invite`, { _id: id })
+            .then((res) => {
+                toast.success("Invite Sent")
+                window.location.reload();
+
+            })
+            .catch((err) => {
+                console.log(err);
+
+            });
 
     }
 
-   
 
- 
+
+
     return (
-        <>
-          {show?
-            <>
-          <Header/>
-          <ToastContainer></ToastContainer>
-         
-                <Box
-                    component="main"
-                    sx={{ flexGrow: 1, p: 3, width: { sm: `calc(95% - ${drawerWidth}px)` } }}
-                >
-                    <Toolbar />
-                    <Typography paragraph>
-                        
-                        <h5 className="mt-4"><b> Employee Invite</b></h5>
-                        <div className="leave">
-                           
-                                <div className="col-sm-8 mt-4">
-                                    <table class="table ">
-                                            <thead>
-                                                <th>Emp Id</th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                               
-                                                <th>Action</th>
-                                            </thead>
-                                    <tbody>
-                                        {
-                                            request.map((element, i) => {
-                                                return (
-                                                    <>
-                                                    <tr  key={i}>
-                                                    <td>{element.name}</td>
-                                                    <td>{element.emp_id}</td>
-                                                    <td>{element.email}</td>
-                                                    <td>{element.invite_status === "true" ?  "sent"
-                                                    :
-                                                    <button className="btn btn-primary mt-1 invite_button" onClick={(e) => {invite(e,element._id)}}>Invite Link</button>
-                                                      }
-                                                      </td>
+        <LayoutTemplate>
+            <ToastContainer></ToastContainer>
+            <div className="container">
+                <h5 className="mt-4"><b> Employee Invite</b></h5>
+                <div className="leave">
+
+                    <div className="col-sm-10 mt-4">
+                        <table class="table ">
+                            <thead>
+                                <th>Emp Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </thead>
+                            {request.length > 0 ?
+                                <tbody>
+                                    {
+                                        request.map((element) => {
+                                            return (
+                                                <>
+                                                    <tr>
+                                                        <td>{element.name}</td>
+                                                        <td>{element.emp_id}</td>
+                                                        <td>{element.email}</td>
+                                                        {element.invite_status == "true" ? <td> <CheckIcon /></td>
+                                                            : <td><button className="btn btn-primary inviteBtn" onClick={(e) => { invite(e, element._id) }}>Invite Link</button></td>
+                                                        }
                                                     </tr>
-                                                    </>
-                                                )
-                                            })
-                                        }                       
-                                        </tbody>
-                                    </table>
-                                    </div>
-                            </div>
-                        
-                    </Typography>
-                </Box>
-        </>
-        : ""
-         }
-        </>
-        
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                                :
+                                <tr><td colspan="8"><h5 className="leave_no_found">No Record Found</h5></td></tr>
+
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </LayoutTemplate>
+
     )
 }
 export default Invite;
