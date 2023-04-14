@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { BASE_URL } from "../baseUrl";
 const SignUp = () => {
 
   const navigate = useNavigate();
 
   const [data, setData] = useState({
-    "username": "",
-    "password": "",
-    "email": "",
-    "dob": "",
-    "phonenumber": ""
+    name: "",
+    password: "",
+    email: "",
+    phonenumber: "",
+    
   })
+
 
 
   const handlesubmit = async (e) => {
@@ -35,73 +37,49 @@ const SignUp = () => {
       },
     };
 
+    const {name,email, password, phonenumber} = data;
+  
+
+    if(!name || !email || !password || !phonenumber){
+      toast.error("All fields are required")
+      return
+    }
+
     axios
-      .post(`${BASE_URL}/signup`, data, config)
+      .post(`http://localhost:8000/signup`, {name:name, email:email,password:password, phonenumber:phonenumber}, config)
       .then((res) => {
         setData(res.data)
-        // localStorage.setItem('authtoken', res.data.authtoken);
-        navigate('/');
+        toast.success('Record Add Successfully')
+        navigate('/login');
       })
       .catch((err) => {
-        console.log(err);
-
+        toast.error(err?.response?.data?.msg);
       });
-    setData({ username: "", email: "", password: "", dob: "", phonenumber: "" })
+    setData({ name: "", email: "", password: "", dob: "", phonenumber: "" })
   }
-
-
-
   return (
     <>
+       <ToastContainer></ToastContainer>
       <div className="container mt-4">
 
         <div className="col-sm-6 mx-auto">
           <div className="card">
             <div className="card-header">
-              <h3 className="text-center pt-5">SIGNUP </h3>
+              <h3 className="text-center pt-5">SIGNUP FORM </h3>
             </div>
             <div className="card-body">
               <form onSubmit={handlesubmit}>
                 <div className="form-login-wrapper">
                   <div className="form-group" align="left">
-                    <label>Username*</label>
+                    <label>Name*</label>
                     <input
                       type="text"
-                      className="form-control formtext email"
+                      className="form-control formtext"
 
-                      placeholder="Username"
-                      name="username"
-                      id="Username"
+                      placeholder="Enter Name"
+                      name="name"
                       onChange={values}
-                      value={data.username}
-                      required
-                    />
-                  </div>
-                  <div className="form-group" align="left">
-                    <label>Date Of Birth*</label>
-                    <input
-                      type="dob"
-                      className="form-control formtext email"
-
-                      placeholder="Date Of Birth"
-                      name="dob"
-                      id="DOB"
-                      onChange={values}
-                      value={data.dob}
-                      required
-                    />
-                  </div>
-                  <div className="form-group" align="left">
-                    <label>Phonenumber*</label>
-                    <input
-                      type="phonenumber"
-                      className="form-control formtext email"
-
-                      placeholder="Phonenumber"
-                      name="phonenumber"
-                      id="Phonenumber"
-                      onChange={values}
-                      value={data.phonenumber}
+                      value={data.name}
                       required
                     />
                   </div>
@@ -111,15 +89,13 @@ const SignUp = () => {
                       type="email"
                       className="form-control formtext email"
 
-                      placeholder="Email"
+                      placeholder="Enter Email"
                       name="email"
-                      id="Email"
                       onChange={values}
                       value={data.email}
                       required
                     />
                   </div>
-
                   <div className="form-group " align="left">
                     <label>Password*</label>
                     <input
@@ -134,8 +110,22 @@ const SignUp = () => {
                       required
                     />
                   </div>
-                  {/* <p>
-                Already have an account ?<Link to = '/login'>Log in</Link></p> */}
+                  <div className="form-group" align="left">
+                    <label>Phone Number*</label>
+                    <input
+                      type="phonenumber"
+                      className="form-control formtext "
+
+                      placeholder="Phonenumber"
+                      name="phonenumber"
+                      id="Phonenumber"
+                      onChange={values}
+                      value={data.phonenumber}
+                      required
+                    />
+                  </div>
+                 
+
                   <div className="submit-btn mt-2" align="right">
                     <input
                       type="submit"
